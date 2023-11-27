@@ -23,7 +23,6 @@ void createMapImg(t_data *data, t_img *img, t_map *map, int WINDOW_WIDTH, int WI
     //creates outline 
     for (int x = offset; x <= WINDOW_WIDTH -offset; x = x + (WINDOW_WIDTH-(offset*2))/map->x) 
         {
-            printf("going to next line x = %d\n", x);
             for (int i = offset; i < WINDOW_HEIGHT -offset; i++ )
             {
                 my_mlx_pixel_put(&p_img, x, i, 0x00FF0000);
@@ -33,7 +32,6 @@ void createMapImg(t_data *data, t_img *img, t_map *map, int WINDOW_WIDTH, int WI
         }
     for (int y = offset; y <= WINDOW_HEIGHT -offset; y = y + (WINDOW_HEIGHT-(offset*2))/map->y)
         {
-            printf("going to next line x = %d\n", y);
             for (int i = offset; i < WINDOW_WIDTH-offset; i++ )
             {
                 my_mlx_pixel_put(&p_img, i, y, 0x00FF0000);
@@ -44,18 +42,18 @@ void createMapImg(t_data *data, t_img *img, t_map *map, int WINDOW_WIDTH, int WI
 }
 
 //highlight boxes when mouse is on them
-void highlight_box(t_data *data, t_img *img, t_map *map, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+void highlight_box(t_data *data, t_img *img, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {
-  //run through map to check if your cursor is on  a box
-  for (int x = 0; x<= map->x; x++)
+   //run through map to check if your cursor is on  a box
+  for (int x = 0; x<= data->map->x; x++)
   {
-    for (int y=0; y<= map->y; y++)
+    for (int y=0; y<= data->map->y; y++)
     {
-      if(data->mouseX > map->map_coord[x][y][0] &&
-          data->mouseX < map->map_coord[x][y][2] &&
-          data->mouseY > map->map_coord[x][y][1] &&
-          data->mouseY < map->map_coord[x][y][3])
-      {highlight(data, img, map->map_coord[x][y][0], map->map_coord[x][y][2], map->map_coord[x][y][1], map->map_coord[x][y][3], WINDOW_WIDTH, WINDOW_HEIGHT);}    
+      if(data->mouseX > data->map->map_coord[x][y][0] &&
+          data->mouseX < data->map->map_coord[x][y][2] &&
+          data->mouseY > data->map->map_coord[x][y][1] &&
+          data->mouseY < data->map->map_coord[x][y][3])
+      {highlight(data, img, data->map->map_coord[x][y][0], data->map->map_coord[x][y][2], data->map->map_coord[x][y][1], data->map->map_coord[x][y][3], WINDOW_WIDTH, WINDOW_HEIGHT);}    
     }
   }
 }

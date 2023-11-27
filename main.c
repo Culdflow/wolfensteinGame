@@ -32,9 +32,12 @@ int	render(t_data *data)
     /* if window has been destroyed, we don't want to put the pixel ! */
     if (data->win_ptr != NULL)
     {
-     // mouse_pos(data);
+      mouse_pos(data);
+      createMapImg(data, data->current_img, data->map, WINDOW_WIDTH, WINDOW_HEIGHT,WINDOW_OFFSET); 
+      highlight_box(data, data->current_img, WINDOW_WIDTH, WINDOW_HEIGHT);
       //if (data->last_img != data->current_img)
       //{
+        printf("printing to screen\n");
         mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->current_img->img, 0, 0);      
         data->last_img = data->current_img;
       //}
@@ -57,8 +60,8 @@ int	main(void)
 {   
     //initialize struct elements
     t_data	data;
-    t_map map = createMap(10, 10, WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
-       
+    t_map map = createMap(20, 10, WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
+    data.map = &map;      
     //test for map
 /*    printf("map x = %d\n", map.x);
     printf("map y = %d\n", map.y);
@@ -96,7 +99,6 @@ int	main(void)
     img.img = mlx_new_image(data.mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT);
     img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
     createMapImg(&data, &img, &map, WINDOW_WIDTH, WINDOW_HEIGHT,WINDOW_OFFSET);
-    createLine(&data, &img, 0,0,0,1000,0x0000FF00, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     data.last_img = NULL;
     data.current_img = &img;
