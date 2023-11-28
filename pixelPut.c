@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 //draws a pixel on the screen
-void	my_mlx_pixel_put(t_img *data, int x, int y, int color)
+void	my_mlx_pixel_put(t_image *data, int x, int y, int color)
 {
 	char	*dst;
 
@@ -13,9 +13,9 @@ void	my_mlx_pixel_put(t_img *data, int x, int y, int color)
 
 
 //creates 2D view of the map
-void createMapImg(t_data *data, t_img *img, t_map *map, int WINDOW_WIDTH, int WINDOW_HEIGHT, int offset)
+void createMapImg(t_data *data, t_image *img, t_map *map, int WINDOW_WIDTH, int WINDOW_HEIGHT, int offset)
 {
-    t_img p_img = *img;
+    t_image p_img = *img;
       
     //creates background
     createRectangle(data, &p_img, offset, offset, WINDOW_WIDTH-offset, WINDOW_HEIGHT-offset, 0x50505050, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -42,7 +42,7 @@ void createMapImg(t_data *data, t_img *img, t_map *map, int WINDOW_WIDTH, int WI
 }
 
 //highlight boxes when mouse is on them
-void highlight_box(t_data *data, t_img *img, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+void highlight_box(t_data *data, t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {
    //run through map to check if your cursor is on  a box
   for (int x = 0; x<= data->map->x; x++)
@@ -59,7 +59,7 @@ void highlight_box(t_data *data, t_img *img, int WINDOW_WIDTH, int WINDOW_HEIGHT
 }
 
 //draw highlights when mouse is on them
-void highlight(t_data *data, t_img *img, int x1, int x2, int y1, int y2, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+void highlight(t_data *data, t_image *img, int x1, int x2, int y1, int y2, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {
   // draw lines
   createLine(data, img, x1, y1, x2, y1, 0x00FFFF00, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -68,7 +68,7 @@ void highlight(t_data *data, t_img *img, int x1, int x2, int y1, int y2, int WIN
   createLine(data, img, x2, y1, x2, y2, 0x00FFFF00, WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 //draws a line using 4 values
-void createLine(t_data *data,t_img *img, int x1_, int y1_, int x2_, int y2_, int color, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, int color, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {
     //initialize variables
     int X1;
@@ -108,7 +108,7 @@ void createLine(t_data *data,t_img *img, int x1_, int y1_, int x2_, int y2_, int
 
 
 //creates a rectangle using 2 positions on the screen
-void createRectangle(t_data *data, t_img *img, int x1_, int y1_, int x2_, int y2_,int color, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_,int color, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {
     //initializing variables
     int X1;
@@ -138,3 +138,9 @@ void createRectangle(t_data *data, t_img *img, int x1_, int y1_, int x2_, int y2
 
     }
 }
+
+void drawPlayer(t_data *data, t_image *img, t_player *pl)
+{
+  my_mlx_pixel_put(img, pl->posX, pl->posY, 0x00FF0050);
+}
+

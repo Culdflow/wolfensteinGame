@@ -33,4 +33,20 @@ t_map createMap(int x,int y, int offset, int WINDOW_WIDTH, int WINDOW_HEIGHT)
     return mymap;
 }
 
+//when clicked track if clicked on a box to turn it into a wall
+void whenClicked(t_data *data)
+{
+  for (int x = 0; x <= data->map->x; x++)
+  {
+    for (int y = 0; y <= data->map->y; y++)
+    {
+      if (data->mouseX >= data->map->map_coord[x][y][0] && 
+          data->mouseX <= data->map->map_coord[x][y][2] && 
+          data->mouseX >= data->map->map_coord[x][y][1] &&
+          data->mouseX <= data->map->map_coord[x][y][3])
+      {printf("clciked on square");}
+    }
+  }
+
+}
 
