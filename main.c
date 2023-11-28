@@ -47,12 +47,20 @@ int	handle_keypress(int keysym, t_data *data)
 //is called every frame
 int	render(t_data *data)
 {
+    t_image img;
+    img.img = mlx_new_image(data->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT);
+    if (img.img == NULL)
+      return (MLX_ERROR);
+    img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
+    data->last_img = NULL;
+    data->current_img = &img;
+ 
+
     /* if window has been destroyed, we don't want to put the pixel ! */
     if (data->win_ptr != NULL)
     {
       //track mouse position
       mouse_pos(data);
-      drawPlayer(data, data->current_img, data->player);
       //draw image into img2
       createMapImg(data, data->current_img, data->map, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_OFFSET); 
       highlight_box(data, data->current_img, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -64,8 +72,11 @@ int	render(t_data *data)
         mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->current_img->img, 0, 0);      
         //data->last_img = data->current_img;
       //}
+      drawPlayer(data, data->current_img, data->player);
+      
     }
     return (0);
+    mlx_destroy_image(data->mlx_ptr, data->current_img);
 }
 
 //test print mouse position
