@@ -25,11 +25,11 @@ int	handle_keypress(int keysym, t_data *data)
         break;
 
       case XK_q:
-        data->player->dir -= 10;
+        data->player->dir -= 1;
         break;
 
       case XK_d:
-        data->player->dir += 10;
+        data->player->dir += 1;
         break;
       
       case XK_z:

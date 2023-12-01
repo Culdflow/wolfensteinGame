@@ -68,7 +68,7 @@ void my_mlx_pixel_put(t_image *data, int x, int y, int color);
 void drawPlayer(t_data *data, t_image *img, t_player *pl);
 void clearImage(t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT);
 //player.c
-void playerMove(t_data *data, int step);
+void playerMove(t_data *data, double step);
 #endif
 
 
