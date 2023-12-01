@@ -15,29 +15,22 @@ void	my_mlx_pixel_put(t_image *data, int x, int y, int color)
 //creates 2D view of the map
 void createMapImg(t_data *data, t_image *img, t_map *map, int WINDOW_WIDTH, int WINDOW_HEIGHT, int offset)
 {
-    t_image p_img = *img;
-      
     //creates background
-    createRectangle(data, &p_img, offset, offset, WINDOW_WIDTH-offset, WINDOW_HEIGHT-offset, 0x50505050, WINDOW_WIDTH, WINDOW_HEIGHT);
+    createRectangle(data, img, offset, offset, WINDOW_WIDTH-offset, WINDOW_HEIGHT-offset, 0xFF801050, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     //creates outline 
-    for (int x = offset; x <= WINDOW_WIDTH -offset; x = x + (WINDOW_WIDTH-(offset*2))/map->x) 
+    for (int x = 0; x <= data->map->x ; x++) 
         {
-            for (int i = offset; i < WINDOW_HEIGHT -offset; i++ )
-            {
-                my_mlx_pixel_put(&p_img, x, i, 0x00FF0000);
-               
-            }
+          for (int y = 0; y <= data->map->y ; y++)
+          {
+          
+            drawSquare(data, img, data->map->map_coord[x][y][0], data->map->map_coord[x][y][2], data->map->map_coord[x][y][1], data->map->map_coord[x][y][3], 0x00101010, WINDOW_WIDTH, WINDOW_HEIGHT);
+              if (data->map->map[x][y] == 1)
+              { createRectangle(data, img, (data->map->map_coord[x][y][0])+1, (data->map->map_coord[x][y][1])+1, (data->map->map_coord[x][y][2])-1, (data->map->map_coord[x][y][3])-1, 0x00FFFFFF, WINDOW_WIDTH, WINDOW_HEIGHT);
+              }
 
-        }
-    for (int y = offset; y <= WINDOW_HEIGHT -offset; y = y + (WINDOW_HEIGHT-(offset*2))/map->y)
-        {
-            for (int i = offset; i < WINDOW_WIDTH-offset; i++ )
-            {
-                my_mlx_pixel_put(&p_img, i, y, 0x00FF0000);
-               
-            }
 
+          } 
         }
 }
 
@@ -53,19 +46,19 @@ void highlight_box(t_data *data, t_image *img, int WINDOW_WIDTH, int WINDOW_HEIG
           data->mouseX < data->map->map_coord[x][y][2] &&
           data->mouseY > data->map->map_coord[x][y][1] &&
           data->mouseY < data->map->map_coord[x][y][3])
-      {highlight(data, img, data->map->map_coord[x][y][0], data->map->map_coord[x][y][2], data->map->map_coord[x][y][1], data->map->map_coord[x][y][3], WINDOW_WIDTH, WINDOW_HEIGHT);}    
+      {drawSquare(data, img, data->map->map_coord[x][y][0], data->map->map_coord[x][y][2], data->map->map_coord[x][y][1], data->map->map_coord[x][y][3], 0x00FFFF00, WINDOW_WIDTH, WINDOW_HEIGHT);}    
     }
   }
 }
 
 //draw highlights when mouse is on them
-void highlight(t_data *data, t_image *img, int x1, int x2, int y1, int y2, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+void drawSquare(t_data *data, t_image *img, int x1, int x2, int y1, int y2, int color, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {
   // draw lines
-  createLine(data, img, x1, y1, x2, y1, 0x00FFFF00, WINDOW_WIDTH, WINDOW_HEIGHT);
-  createLine(data, img, x1, y2, x2, y2, 0x00FFFF00, WINDOW_WIDTH, WINDOW_HEIGHT);
-  createLine(data, img, x1, y1, x1, y2, 0x00FFFF00, WINDOW_WIDTH, WINDOW_HEIGHT);
-  createLine(data, img, x2, y1, x2, y2, 0x00FFFF00, WINDOW_WIDTH, WINDOW_HEIGHT);
+  createLine(data, img, x1, y1, x2, y1, color, WINDOW_WIDTH, WINDOW_HEIGHT);
+  createLine(data, img, x1, y2, x2, y2, color, WINDOW_WIDTH, WINDOW_HEIGHT);
+  createLine(data, img, x1, y1, x1, y2, color, WINDOW_WIDTH, WINDOW_HEIGHT);
+  createLine(data, img, x2, y1, x2, y2, color, WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 //draws a line using 4 values
 void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, int color, int WINDOW_WIDTH, int WINDOW_HEIGHT)
@@ -144,3 +137,11 @@ void drawPlayer(t_data *data, t_image *img, t_player *pl)
   my_mlx_pixel_put(img, pl->posX, pl->posY, 0x00FF0050);
 }
 
+void clearImage(t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+{
+  for(int x = 0; x < WINDOW_WIDTH; x++)
+  {
+    for(int y = 0; y < WINDOW_HEIGHT; y++)
+      my_mlx_pixel_put(img, x, y, 0x00000000);
+  }
+}

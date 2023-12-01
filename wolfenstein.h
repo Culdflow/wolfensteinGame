@@ -29,8 +29,9 @@ typedef struct s_map
 //define player
 typedef struct s_player
 {
-    int posX;
-    int posY;
+    double posX;
+    double posY;
+    int dir;
 } t_player;
 
 
@@ -62,11 +63,12 @@ void createMapImg(t_data *data, t_image *img, t_map *map, int WINDOW_WIDTH, int 
 void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_,int color, int WINDOW_WIDTH, int WINDOW_HEIGHT);
 void createLine(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_, int color, int WINDOW_WIDTH, int WINDOW_HEIGHT);
 void highlight_box(t_data *data, t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT);
-void highlight(t_data *data, t_image *img, int x1, int x2, int y1, int y2, int WINDOW_WIDTH, int WINDOW_HEIGHT);
+void drawSquare(t_data *data, t_image *img, int x1, int x2, int y1, int y2, int color, int WINDOW_WIDTH, int WINDOW_HEIGHT);
 void my_mlx_pixel_put(t_image *data, int x, int y, int color);
 void drawPlayer(t_data *data, t_image *img, t_player *pl);
+void clearImage(t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT);
 //player.c
-void playerMove(t_data *data, int x, int y);
+void playerMove(t_data *data, int step);
 #endif
 
 
