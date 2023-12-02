@@ -12,27 +12,7 @@ void	my_mlx_pixel_put(t_image *data, int x, int y, int color)
 }
 
 
-//creates 2D view of the map
-void createMapImg(t_data *data, t_image *img, t_map *map, int WINDOW_WIDTH, int WINDOW_HEIGHT, int offset)
-{
-    //creates background
-    createRectangle(data, img, offset, offset, WINDOW_WIDTH-offset, WINDOW_HEIGHT-offset, 0xFF801050, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    //creates outline 
-    for (int x = 0; x <= data->map->x ; x++) 
-        {
-          for (int y = 0; y <= data->map->y ; y++)
-          {
-          
-            drawSquare(data, img, data->map->map_coord[x][y][0], data->map->map_coord[x][y][2], data->map->map_coord[x][y][1], data->map->map_coord[x][y][3], 0x00101010, WINDOW_WIDTH, WINDOW_HEIGHT);
-              if (data->map->map[x][y] == 1)
-              { createRectangle(data, img, (data->map->map_coord[x][y][0])+1, (data->map->map_coord[x][y][1])+1, (data->map->map_coord[x][y][2])-1, (data->map->map_coord[x][y][3])-1, 0x00FFFFFF, WINDOW_WIDTH, WINDOW_HEIGHT);
-              }
-
-
-          } 
-        }
-}
 
 //highlight boxes when mouse is on them
 void highlight_box(t_data *data, t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT)
@@ -132,10 +112,7 @@ void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int 
     }
 }
 
-void drawPlayer(t_data *data, t_image *img, t_player *pl)
-{
-  my_mlx_pixel_put(img, pl->posX, pl->posY, 0x00FF0050);
-}
+
 
 void clearImage(t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {

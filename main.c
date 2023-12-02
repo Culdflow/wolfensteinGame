@@ -75,6 +75,8 @@ int mouse_pos(t_data *data)
   mlx_mouse_get_pos(data->mlx_ptr, data->win_ptr, &x, &y); 
   data->mouseX = x;
   data->mouseY = y;
+  updatePlayerDir(data);
+  data->oldMouseX = data->mouseX;
 }
 
 
@@ -86,8 +88,9 @@ int	main(void)
     player.posX = 50;
     player.posY = 50;
     player.dir = 0;
+    data.oldMouseX = 0;
     data.player = &player;
-    t_map map = createMap(5, 5, WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
+    t_map map = createMap(10, 10, WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
     data.map = &map;
 
     //test for map
@@ -149,6 +152,5 @@ int	main(void)
 
     /* we will exit the loop if there's no window left, and execute this code */
     mlx_destroy_display(data.mlx_ptr);
-    printf("fart\n");
     free(data.mlx_ptr);
 }
