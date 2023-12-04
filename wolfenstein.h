@@ -71,10 +71,10 @@ t_map createMap(int x,int y, int offset, int WINDOW_WIDTH, int WINDOW_HEIGHT);
 void createMapImg(t_data *data, t_image *img, t_map *map, int WINDOW_WIDTH, int WINDOW_HEIGHT, int offset);
 Vector2 getMapPos(t_data *data, int posX, int posY);
 //pixelPut.c
-void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_,int color, int WINDOW_WIDTH, int WINDOW_HEIGHT);
-void createLine(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_, int color, int WINDOW_WIDTH, int WINDOW_HEIGHT);
-void highlight_box(t_data *data, t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT);
-void drawSquare(t_data *data, t_image *img, int x1, int x2, int y1, int y2, int color, int WINDOW_WIDTH, int WINDOW_HEIGHT);
+void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_,int color);
+void createLine(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_, int color);
+void highlight_box(t_data *data, t_image *img);
+void drawSquare(t_data *data, t_image *img, int x1, int y1, int x2, int y2, int color);
 void my_mlx_pixel_put(t_image *data, int x, int y, int color);
 void clearImage(t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT);
 //player.c

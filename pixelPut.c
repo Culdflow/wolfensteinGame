@@ -15,7 +15,7 @@ void	my_mlx_pixel_put(t_image *data, int x, int y, int color)
 
 
 //highlight boxes when mouse is on them
-void highlight_box(t_data *data, t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+void highlight_box(t_data *data, t_image *img)
 {
    //run through map to check if your cursor is on  a box
   for (int x = 0; x<= data->map->x; x++)
@@ -26,28 +26,31 @@ void highlight_box(t_data *data, t_image *img, int WINDOW_WIDTH, int WINDOW_HEIG
           data->mouseX < data->map->map_coord[x][y][2] &&
           data->mouseY > data->map->map_coord[x][y][1] &&
           data->mouseY < data->map->map_coord[x][y][3])
-      {drawSquare(data, img, data->map->map_coord[x][y][0], data->map->map_coord[x][y][2], data->map->map_coord[x][y][1], data->map->map_coord[x][y][3], 0x00FFFF00, WINDOW_WIDTH, WINDOW_HEIGHT);}    
+      {drawSquare(data, img, data->map->map_coord[x][y][0], data->map->map_coord[x][y][1], data->map->map_coord[x][y][2], data->map->map_coord[x][y][3], 0x00FFFF00);}    
     }
   }
 }
 
 //draw highlights when mouse is on them
-void drawSquare(t_data *data, t_image *img, int x1, int x2, int y1, int y2, int color, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+void drawSquare(t_data *data, t_image *img, int x1, int y1, int x2, int y2, int color)
 {
   // draw lines
-  createLine(data, img, x1, y1, x2, y1, color, WINDOW_WIDTH, WINDOW_HEIGHT);
-  createLine(data, img, x1, y2, x2, y2, color, WINDOW_WIDTH, WINDOW_HEIGHT);
-  createLine(data, img, x1, y1, x1, y2, color, WINDOW_WIDTH, WINDOW_HEIGHT);
-  createLine(data, img, x2, y1, x2, y2, color, WINDOW_WIDTH, WINDOW_HEIGHT);
+  createLine(data, img, x1, y1, x2, y1, color);
+  createLine(data, img, x1, y2, x2, y2, color);
+  createLine(data, img, x1, y1, x1, y2, color);
+  createLine(data, img, x2, y1, x2, y2, color);
 }
 //draws a line using 4 values
-void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, int color, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, int color)
 {
     //initialize variables
     int X1;
     int X2;
     int Y1;
     int Y2;
+
+    int diff1;
+    int diff2;
 
     //organize x and y seperately
     if(x1_ <= x2_)
@@ -58,7 +61,11 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
     if(y1_ <= y2_)
     {Y1 = y1_; Y2 = y2_;}
     else
-    {Y1 = y2_; Y2 = y1_;} 
+    {Y1 = y2_; Y2 = y1_;}
+
+    //calculate diff
+    diff1 = X2 - X1;
+    diff2 = Y2 - Y1;
 
     //if the line is vertical
     if ( X1 == X2 )
@@ -75,13 +82,44 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
     //if line is diagonal
     else 
     {
-      printf("ERROR diagonal lines not supported in function createLine\n");
-    } 
+      if (diff1 >= diff2)
+      {
+        int new_y = Y1;
+        int rate;
+        for (int i = 0; i < diff1; i++)
+        {
+          if (( X2 - i) != 0 && ( Y2 - new_y) != 0)
+          {
+          rate = (X2 - i) / (Y2 - new_y);
+          if (i % rate == 0 )
+            {new_y += 1;}
+          }
+
+          my_mlx_pixel_put(img, i, new_y, color);
+        }
+      }
+      else 
+      {
+        int new_x = X1;
+        int rate;
+        for (int i = 0; i < diff2; i++)
+        {
+          if (( Y2 - i) != 0 && ( X2 - new_x) != 0)
+          {
+          rate = (Y2 - i) / (X2 - new_x);
+          if (i % rate == 0 )
+            {new_x += 1;}
+          }
+          my_mlx_pixel_put(img, new_x, i, color);        
+        }
+      }
+    drawSquare(data, img, X2-2, Y2-2, X2+2, Y2+2, 0x00FF0000);
+    }
 }
 
 
 //creates a rectangle using 2 positions on the screen
-void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_,int color, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_,int color)
 {
     //initializing variables
     int X1;

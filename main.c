@@ -54,11 +54,12 @@ int	render(t_data *data)
       //track mouse position
       mouse_pos(data);
       createMapImg(data, data->current_img, data->map, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_OFFSET); 
-      highlight_box(data, data->current_img, WINDOW_WIDTH, WINDOW_HEIGHT);
+      highlight_box(data, data->current_img);
       drawPlayer(data, data->current_img, data->player); 
       //if image did not change from last frame don't print it to the screen
       //if (data->last_img != data->current_img)
       //{
+        createLine(data, data->current_img, 0, 0, data->mouseX, data->mouseY, 0x00FF00FF);
         mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->current_img->img, 0, 0);      
         data->last_img = data->current_img;
       //}

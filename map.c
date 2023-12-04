@@ -46,14 +46,14 @@ t_map createMap(int x,int y, int offset, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 void createMapImg(t_data *data, t_image *img, t_map *map, int WINDOW_WIDTH, int WINDOW_HEIGHT, int offset)
 {
     //creates outline
-    drawSquare(data, img, offset, WINDOW_WIDTH-offset, offset, WINDOW_HEIGHT-offset, 0x00FFFFFF, WINDOW_WIDTH, WINDOW_HEIGHT);
+    drawSquare(data, img, offset, offset, WINDOW_WIDTH-offset, WINDOW_HEIGHT-offset, 0x00FFFFFF);  
     //creates walls 
     for (int x = 0; x <= data->map->x ; x++) 
         {
           for (int y = 0; y <= data->map->y ; y++)
           {
               if (data->map->map[x][y] == 1)
-              { createRectangle(data, img, (data->map->map_coord[x][y][0]), (data->map->map_coord[x][y][1]), (data->map->map_coord[x][y][2]), (data->map->map_coord[x][y][3]), 0x00FFFFFF, WINDOW_WIDTH, WINDOW_HEIGHT);}
+              { createRectangle(data, img, (data->map->map_coord[x][y][0]), (data->map->map_coord[x][y][1]), (data->map->map_coord[x][y][2]), (data->map->map_coord[x][y][3]), 0x00FFFFFF);}
           } 
         }
 }
