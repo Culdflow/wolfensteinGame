@@ -51,7 +51,7 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
 
     int diff1;
     int diff2;
-
+   
     //organize x and y seperately
     if(x1_ <= x2_)
     {X1 = x1_; X2 = x2_;}
@@ -66,6 +66,11 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
     //calculate diff
     diff1 = X2 - X1;
     diff2 = Y2 - Y1;
+    //printf("ray start pos X = %d\n", X1);
+    //printf("ray start pos Y = %d\n", Y1);
+    //printf("ray end pos X = %d\n", X2);
+    //printf("ray end pos Y = %d\n", Y2);
+    
 
     //if the line is vertical
     if ( X1 == X2 )
@@ -86,13 +91,14 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
       {
         int new_y = Y1;
         int rate;
-        for (int i = 0; i < diff1; i++)
+        for (int i = X1; i < diff1 + X1; i++)
         {
           if (( X2 - i) != 0 && ( Y2 - new_y) != 0)
           {
           rate = (X2 - i) / (Y2 - new_y);
           if (i % rate == 0 )
             {new_y += 1;}
+          else{break;}
           }
 
           my_mlx_pixel_put(img, i, new_y, color);
@@ -102,7 +108,7 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
       {
         int new_x = X1;
         int rate;
-        for (int i = 0; i < diff2; i++)
+        for (int i = Y1; i < diff2 + Y1; i++)
         {
           if (( Y2 - i) != 0 && ( X2 - new_x) != 0)
           {
@@ -110,6 +116,9 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
           if (i % rate == 0 )
             {new_x += 1;}
           }
+          else{break;}
+          //printf("putting pixel in X = %d\n", new_x);
+          //printf("putting pixel in Y = %d\n", i);
           my_mlx_pixel_put(img, new_x, i, color);        
         }
       }

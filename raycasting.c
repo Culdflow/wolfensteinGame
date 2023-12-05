@@ -5,58 +5,82 @@
 #define PI 3.141592654
 
 
-ray createRay(t_data *data, Vec2 *start, int angle)
+ray createRay(t_data *data, Vec2 *vecStart, int angle)
 {
   float rx, ry, ox, oy, dof = 0;
-
+  
+  //setup error return
+  Vec2 ERR;
+  ERR.x = -1;
+  ERR.y = -1;
   ray ERROR;
-  ERROR.startPos->x = -1;
+  ERROR.startPos = &ERR;
+  ERROR.endPos = &ERR;
 
+  //setup pointers
   t_player *player = data->player;
   t_map *map = data->map;
-  Vec2 mapPos = getMapPos(data, start->x, start->y);
-  if (mapPos.x == -1){printf("player not in map"); return ERROR;}
+  
+  //setup getmapPos
+  Vec2 mapPos = getMapPos(data, vecStart->x, vecStart->y);
+  if (mapPos.x == -1){printf("player not in map\n"); return ERROR;}
   int newMapPos[2] = {mapPos.x, mapPos.y};
-
+  
+  //setup helpful variables
   float rad = (angle * PI) / 180;
   float atan = 1/tan(rad);
   
+  //setup output ray
   ray out;
-  out.startPos = start;
+  out.startPos = vecStart;
   out.angle = angle;
+  printf("angle = %d\n", angle);
 
-  if (angle < 0) //looking up
+
+  //if looking up set ray position accordingly
+  if (angle < 0 ) //looking up
   {
     ry = map->map_coord[newMapPos[0]][newMapPos[1]][1];
     rx = (player->pos->y - ry)*atan + player->pos->x;
-    oy = map->map_coord[newMapPos[0]][newMapPos[1]-1][1] - ry;
+    oy = map->map_coord[newMapPos[0]-1][newMapPos[1]][1] - ry;
     ox = -oy * atan;
+    printf("updated (up) ry = %f, rx = %f, oy = %f, ox = %f", ry, rx, oy, ox);  
+
   }
+  //if looking down set ray position accordingly
   else if (angle > 0)
   {
     ry = map->map_coord[newMapPos[0]][newMapPos[1]][3];
     rx = (player->pos->y - ry)*atan + player->pos->x;
-    oy = map->map_coord[newMapPos[0]][newMapPos[1]+1][3] - ry;
+    oy = map->map_coord[newMapPos[0]+1][newMapPos[1]][3] - ry;
     ox = -oy * atan;
+    printf("updated (down) ry = %f, rx = %f, oy = %f, ox = %f", ry, rx, oy, ox);  
   }
+  //if ray looking straight right or straight left
   else 
   {
     rx = player->pos->x;
     ry = player->pos->y;
-    dof = 2;
+    dof = 3;
   }
-  
-  while (dof < 2)
+  //loop for depth of view
+  while (dof < 3)
   {
-    mapPos = getMapPos(data, start->x, start->y);
-    if (mapPos.x == -1){printf("player not in map"); return ERROR;}
+    //printf("dof = %f\n", dof);
+    //get map pos
+    mapPos = getMapPos(data, rx, ry);
+    if (mapPos.x == -1){printf("ray not in map\n"); return ERROR;}
     newMapPos[0] = mapPos.x; newMapPos[1] = mapPos.y;
+    //if wall stop
     if (map->map[newMapPos[0]][newMapPos[1]] == 1)
     {
-      dof = 2; //hit wall
+      dof = 3;
     }
+    //else keep looking forward
     else
     {
+      printf("didnt hit wall rx = %f ry = %f\n", rx, ry);
+      printf("ox = %f oy = %f\n", ox, oy);
       rx += ox;
       ry += oy;
       dof += 1;

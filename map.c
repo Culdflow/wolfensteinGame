@@ -87,9 +87,9 @@ Vec2 getMapPos(t_data *data, int posX, int posY)
     for (int y = 0; y <= data->map->y; y++)
     {
      //if mouse 
-     if ( posX >= data->map->map_coord[x][y][0] && 
+     if ( posX > data->map->map_coord[x][y][0] && 
           posX <= data->map->map_coord[x][y][2] && 
-          posY >= data->map->map_coord[x][y][1] &&
+          posY > data->map->map_coord[x][y][1] &&
           posY <= data->map->map_coord[x][y][3])
       {
         mapPos.x = x;
