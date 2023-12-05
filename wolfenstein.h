@@ -8,7 +8,16 @@ typedef struct s_vector2
 {
     double x;
     double y;
-}   Vector2;
+}   Vec2;
+
+//define struct ray
+typedef struct s_ray
+{
+    Vec2 *startPos;
+    Vec2 *endPos;
+    int angle;
+    float length;
+}   ray;
 
 
 //define struct t_img
@@ -38,8 +47,7 @@ typedef struct s_map
 //define player
 typedef struct s_player
 {
-    double posX;
-    double posY;
+    Vec2 *pos;
     int dir;
 } t_player;
 
@@ -69,7 +77,7 @@ int mouse_pos(t_data *data);
 //map.c
 t_map createMap(int x,int y, int offset, int WINDOW_WIDTH, int WINDOW_HEIGHT);
 void createMapImg(t_data *data, t_image *img, t_map *map, int WINDOW_WIDTH, int WINDOW_HEIGHT, int offset);
-Vector2 getMapPos(t_data *data, int posX, int posY);
+Vec2 getMapPos(t_data *data, int posX, int posY);
 //pixelPut.c
 void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_,int color);
 void createLine(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_, int color);
@@ -82,6 +90,9 @@ void playerMove(t_data *data, double step);
 void drawPlayer(t_data *data, t_image *img, t_player *pl);
 //mouse.c
 void updatePlayerDir(t_data *data);
+//raycasting.c
+ray createRay(t_data *data, Vec2 *start, int angle);
+void drawRay(t_data *data, ray *myRay, int color);
 #endif
 
 

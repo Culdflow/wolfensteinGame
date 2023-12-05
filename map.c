@@ -72,10 +72,14 @@ void whenClicked(t_data *data)
 }
 
 //returns the position you are in the map
-Vector2 getMapPos(t_data *data, int posX, int posY)
+Vec2 getMapPos(t_data *data, int posX, int posY)
 {
+  Vec2 ERROR;
+  ERROR.x = -1;
+  ERROR.y = -1;
   //instance vector 2 
-  Vector2 mapPos;
+  Vec2 mapPos;
+  mapPos = ERROR;
 
   //cycle through map
   for (int x = 0; x <= data->map->x; x++)
@@ -93,5 +97,7 @@ Vector2 getMapPos(t_data *data, int posX, int posY)
       }
     }
   }
+  if (mapPos.x == ERROR.x)
+    {printf("coord not in map");return ERROR;}
   return mapPos;
 }
