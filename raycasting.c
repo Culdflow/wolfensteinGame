@@ -11,27 +11,59 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   out.startPos = vecStart;
   //convert angle to radiant
   float angleRad = (angle * PI) / 180;
+  
+  //get map endPos
+  intVec2 startMapPos;
+  startMapPos = getMapPos(data, vecStart->x, vecStart->y);
+  //setup unit step size
+  intVec2 unitStepSize;
+  //calculate unit step size
+  unitStepSize.x = data->map->map_coord[startMapPos.x][startMapPos.y + 1][0] - data->map->map_coord[startMapPos.x][startMapPos.y][0];
+  unitStepSize.y = data->map->map_coord[startMapPos.x + 1][startMapPos.y][1] - data->map->map_coord[startMapPos.x][startMapPos.y][1];
+  
+  intVec2 unitTop;
+  unitTop.x = data->map->map_coord[startMapPos.x][startMapPos.y][0];
+  unitTop.y = data->map->map_coord[startMapPos.x][startMapPos.y][1];
+
+  intVec2 unitBottom;
+  unitBottom.x = data->map->map_coord[startMapPos.x][startMapPos.y][2];
+  unitBottom.y = data->map->map_coord[startMapPos.x][startMapPos.y][3];
+ 
+  Vec2 r;
+
+ 
+
   //setup endpos
   Vec2 endPos;
-  printf("angle = %d\n", angle);
   //if looking up
-  if (angle < 0 && angle) endPos.y = vecStart->y + (rayLength * sin(angleRad));
+  if (angle < 0) {r.y = vecStart->y - unitTop.y; endPos.y = vecStart->y + (r.y * sin(angleRad));}
   //else
-  else if (angle > 0) endPos.y = vecStart->y + (rayLength * sin(angleRad));
-  else if (angle == 0 || angle % 180 == 0) endPos.y = vecStart->y;
-  else endPos.y = 0;
+  else if (angle > 0) {r.y = unitBottom.y - vecStart->y;  endPos.y = vecStart->y + (r.y * sin(angleRad));}
+  else if (angle == 0 || angle % 180 == 0) {r.y = 0; endPos.y = vecStart->y;}
+  else {r.y = 0; endPos.y = 0;}
   //if looking left
-  if (angle < - 90 || angle > 90) endPos.x = vecStart->x + (rayLength * cos(angleRad));
+  if (angle < - 90 || angle > 90) {r.x = vecStart->x - unitTop.x; endPos.x = vecStart->x + (r.x * cos(angleRad));}
   //else
-  else if (angle > - 90 && angle < 90) endPos.x = vecStart->x + (rayLength * cos(angleRad));
-  else if (angle % 90 == 0)endPos.x = vecStart->x;
-  else endPos.y = 0;
+  else if (angle > - 90 && angle < 90) {r.x = unitBottom.x - vecStart->x; endPos.x = vecStart->x + (r.x * cos(angleRad));}
+  else if (angle % 90 == 0) {r.x = 0; endPos.x = vecStart->x;}
+  else {r.x = 0; endPos.y = 0;}
+  
+  int dof = 0;
+
+  while (dof < 5)
+  {
+    Vec2 mapPosArr;
+    mapPosArr.x = data->map->map_coord[][][]
+    if (data->map->map[intr.x][intr.y] == 1)
+    {
+      dof = 5;
+      endPos = r;
+    }
+
+    dof += 1;
+  }
 
   out.endPos = &endPos;
-  printf("out start x = %f\n", out.startPos->x);
-  printf("out start y = %f\n", out.startPos->y);
-  printf("out end x = %f\n", out.endPos->x);
-  printf("out end y = %f\n", out.endPos->y);
   drawRay(data, &out, 0x0000FF00);
   
 }

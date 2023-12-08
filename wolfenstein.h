@@ -3,6 +3,13 @@
 
 //---------------------------DEFINE STRUCTS------------------------------------------------
 
+//define intVector2 struct
+typedef struct s_intVec2
+{
+  int x;
+  int y;
+} intVec2;
+
 //define Vector2 struct
 typedef struct s_vector2
 {
@@ -48,6 +55,7 @@ typedef struct s_map
 typedef struct s_player
 {
     Vec2 *pos;
+    int speed;
     int dir;
 } t_player;
 
@@ -77,7 +85,7 @@ int mouse_pos(t_data *data);
 //map.c
 t_map createMap(int x,int y, int offset, int WINDOW_WIDTH, int WINDOW_HEIGHT);
 void createMapImg(t_data *data, t_image *img, t_map *map, int WINDOW_WIDTH, int WINDOW_HEIGHT, int offset);
-Vec2 getMapPos(t_data *data, int posX, int posY);
+intVec2 getMapPos(t_data *data, int posX, int posY);
 //pixelPut.c
 void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_,int color);
 void createLine(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_, int color);

@@ -33,11 +33,11 @@ int	handle_keypress(int keysym, t_data *data)
         break;
       
       case XK_z:
-        playerMove(data, 10);
+        playerMove(data, data->player->speed);
         break;
 
       case XK_s:
-        playerMove(data, -10);
+        playerMove(data, - data->player->speed);
         break;
     }
     return (0);
@@ -92,6 +92,7 @@ int	main(void)
     playerPos.y = 500;
     player.pos = &playerPos;
     player.dir = 0;
+    player.speed = 3;
     data.oldMouseX = 0;
     data.player = &player;
     t_map map = createMap(10, 10, WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
