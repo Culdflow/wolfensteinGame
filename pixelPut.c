@@ -122,7 +122,7 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
           my_mlx_pixel_put(img, new_x, i, color);        
         }
       }
-    drawSquare(data, img, X2-2, Y2-2, X2+2, Y2+2, 0x00FF0000);
+    drawSquare(data, img, x2_ - 2, y2_ - 2, x2_ + 2, y2_ + 2, 0x00FF0000);
     }
 }
 

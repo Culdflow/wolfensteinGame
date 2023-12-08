@@ -23,6 +23,14 @@ int	handle_keypress(int keysym, t_data *data)
         mlx_destroy_window(data->mlx_ptr, data->win_ptr);
         data->win_ptr = NULL;
         break;
+
+      case XK_d:
+        data->player->dir += 2;
+        break;
+
+      case XK_q:
+        data->player->dir -= 2;
+        break;
       
       case XK_z:
         playerMove(data, 10);
