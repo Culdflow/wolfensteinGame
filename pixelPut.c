@@ -49,8 +49,8 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
     int Y1;
     int Y2;
 
-    int diff1;
-    int diff2;
+    float diffX;
+    float diffY;
    
     //organize x and y seperately
     if(x1_ <= x2_)
@@ -64,67 +64,48 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
     {Y1 = y2_; Y2 = y1_;}
 
     //calculate diff
-    diff1 = X2 - X1;
-    diff2 = Y2 - Y1;
-    //printf("ray start pos X = %d\n", X1);
-    //printf("ray start pos Y = %d\n", Y1);
-    //printf("ray end pos X = %d\n", X2);
-    //printf("ray end pos Y = %d\n", Y2);
+    diffX = x2_ - x1_;
+    diffY = y2_ - y1_;
+    printf("ray start pos X = %d\n", x1_);
+    printf("ray start pos Y = %d\n", y1_);
+    printf("ray end pos X = %d\n", x2_);
+    printf("ray end pos Y = %d\n", y2_);
     
 
-    //if the line is vertical
-    if ( X1 == X2 )
-    {
-      for (int i = Y1; i <= Y2; i++ )
-        {my_mlx_pixel_put(img, X1, i, color);}
-    }
-    //if line is horizontal
-    else if (Y1 == Y2)
-    { 
-      for (int i = X1; i <= X2; i++ )
-        {my_mlx_pixel_put(img, i, Y1, color);}
-    }
-    //if line is diagonal
-    else 
-    {
-      if (diff1 >= diff2)
+      float step;
+      Vec2 strtPix;
+      Vec2 endPix;
+      int intStep;
+      if (diffX > diffY)
       {
-        int new_y = Y1;
-        int rate;
-        for (int i = X1; i < diff1 + X1; i++)
-        {
-          if (( X2 - i) != 0 && ( Y2 - new_y) != 0)
-          {
-          rate = (X2 - i) / (Y2 - new_y);
-          if (i % rate == 0 )
-            {new_y += 1;}
-          else{break;}
-          }
+        if (diffX > 0) {strtPix.x = x1_; strtPix.y = y1_; endPix.x = x2_; endPix.y = y2_;}
+        else {strtPix.x = x2_; strtPix.y = y2_; endPix.x = x1_; endPix.y = y1_;}
+        step = strtPix.y;
+        
 
-          my_mlx_pixel_put(img, i, new_y, color);
+        for(int x = strtPix.x; x < endPix.x; x++)
+        {
+          intStep = (int)step;
+          my_mlx_pixel_put(img, x, intStep, color);
+          step += diffY / diffX;
         }
+
       }
       else 
       {
-        int new_x = X1;
-        int rate;
-        for (int i = Y1; i < diff2 + Y1; i++)
+        if (diffY > 0) {strtPix.x = x1_; strtPix.y = y1_; endPix.x = x2_; endPix.y = y2_;}
+        else {strtPix.x = x2_; strtPix.y = y2_; endPix.x = x1_; endPix.y = y1_;}
+
+        step = strtPix.x;
+        for(int y = strtPix.y; y < endPix.y; y++)
         {
-          if (( Y2 - i) != 0 && ( X2 - new_x) != 0)
-          {
-          rate = (Y2 - i) / (X2 - new_x);
-          if (i % rate == 0 )
-            {new_x += 1;}
-          }
-          else{break;}
-          //printf("putting pixel in X = %d\n", new_x);
-          //printf("putting pixel in Y = %d\n", i);
-          my_mlx_pixel_put(img, new_x, i, color);        
+          intStep = (int)step;
+          my_mlx_pixel_put(img, intStep, y, color);
+          step += diffX / diffY;          
         }
       }
-    drawSquare(data, img, x2_ - 2, y2_ - 2, x2_ + 2, y2_ + 2, 0x00FF0000);
-    }
 }
+
 
 
 //creates a rectangle using 2 positions on the screen

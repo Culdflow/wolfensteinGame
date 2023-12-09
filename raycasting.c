@@ -50,18 +50,18 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   
   int dof = 0;
 
-  while (dof < 5)
-  {
-    Vec2 mapPosArr;
-    mapPosArr.x = data->map->map_coord[][][]
-    if (data->map->map[intr.x][intr.y] == 1)
-    {
-      dof = 5;
-      endPos = r;
-    }
+  //while (dof < 5)
+  //{
+    //Vec2 mapPosArr;
+    //mapPosArr.x = data->map->map_coord[][][]
+    //if (data->map->map[intr.x][intr.y] == 1)
+    //{
+      //dof = 5;
+      //endPos = r;
+    //}
 
-    dof += 1;
-  }
+    //dof += 1;
+  //}
 
   out.endPos = &endPos;
   drawRay(data, &out, 0x0000FF00);
