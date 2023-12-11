@@ -1,6 +1,8 @@
 #include "wolfenstein.h"
 #include <mlx/mlx.h>
 #include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
 
 //draws a pixel on the screen
 void	my_mlx_pixel_put(t_image *data, int x, int y, int color)
@@ -64,12 +66,8 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
     {Y1 = y2_; Y2 = y1_;}
 
     //calculate diff
-    diffX = x2_ - x1_;
-    diffY = y2_ - y1_;
-    printf("ray start pos X = %d\n", x1_);
-    printf("ray start pos Y = %d\n", y1_);
-    printf("ray end pos X = %d\n", x2_);
-    printf("ray end pos Y = %d\n", y2_);
+    diffX = abs(x2_) - abs(x1_);
+    diffY = abs(y2_) - abs(y1_);
     
 
       float step;
