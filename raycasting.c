@@ -26,21 +26,27 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   float angleRad = (angle * PI) / 180; 
 
   //first intersection
-  Vec2 inter1;
+  Vec2 interY;
+  Vec2 interX;
 
-  //get map position for player position
+  //get y map position for player position
   intVec2 playerMapPos = getMapPos(data, (int)vecStart->x, (int)vecStart->y);
-  if (angle < 0) inter1.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][1] - 1;
-  else if (angle > 0)inter1.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][3] + 1;
-  else inter1.y = vecStart->y; 
 
+  //setup interY wich checks for collisions on y
+  if (angle < 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][1]-1; interY.x = vecStart->x - abs(vecStart->y - interY.y) / tan(angleRad);}
+  else if (angle > 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][3]+1; interY.x = vecStart->x + abs(vecStart->y - interY.y) / tan(angleRad);}
+  else interY.y = vecStart->y; 
+
+  //get interX wich checks for collisions on x00FF00FF
+  if (angle > - 90 && angle < 90) interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][2]+1;
+  else if (angle < - 90 || angle > 90) interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][0]-1;
+  else interX.x = vecStart->x;
+  //setup x pos
+    interX.y = vecStart->x - abs(vecStart->x - interX.x) / tan(angleRad);
   
-  //setup x pos 
-  inter1.x = vecStart->x + (vecStart->y - inter1.y) / tan(-angleRad);
-  
-  //setup vec map pos position of inter1 in map
+  //setup vec map pos position of interY in map
   intVec2 vecMapPos;
-
+  intVec2 vecMapLook;
   //setup error
   intVec2 ERROR;
   ERROR.x = 0;
@@ -48,28 +54,33 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
 
   for (int i = 0;i < dof; i++)
   {
-    //find pos in map
-    vecMapPos = getMapPos(data,(int)inter1.x,(int)inter1.y);
-    //if pos not in map
-    if (vecMapPos.x = -1) {printf("ERROR ray end pos not in map\n"); break;}
     
-    if (data->map->map[vecMapPos.x][vecMapPos.y] == 1)
-      i = dof;
+    //find pos in map
+    vecMapPos = getMapPos(data,(int)interY.y,(int)interY.x);
+    printf("inter X = %f\n", interY.x);
+    printf("inter Y = %f\n", interY.y);
+    printf("map pos X = %d\n", vecMapPos.x);
+    printf("map pos Y = %d\n", vecMapPos.y);
+    //if pos not in map
+    if (vecMapPos.x == -1) {printf("ERROR ray end pos not in map\n"); vecMapPos = ERROR;}
+    if (data->map->map[vecMapPos.y][vecMapPos.x] == 1) {i = dof; printf("found wall\n");break;}
 
-    if (angle < 0) {inter1.y -= unitStep.y; inter1.x += unitStep.y/tan(-angleRad);}
-    else if (angle > 0) {inter1.y += unitStep.y; inter1.x += unitStep.y/tan(-angleRad);}
-    if (inter1.x > 1000) inter1.x = 1000;
-    if (inter1.y > 1000) inter1.y = 1000;
-    if (inter1.x < 0) inter1.x = 0;
-    if (inter1.y < 0) inter1.y = 0;
+    if (angle < 0) 
+    {
+      interY.y -= unitStep.y;
+      interY.x -= unitStep.y/tan(angleRad);   
+    }
+    else if (angle > 0) 
+    {
+      interY.y += unitStep.y;
+      interY.x += unitStep.y/tan(angleRad);
+    }
 
-
-
- 
   }
 
 
-  out.endPos = &inter1;
+
+  out.endPos = &interY;
   drawRay(data, &out, 0x00FF00FF);
 }
 

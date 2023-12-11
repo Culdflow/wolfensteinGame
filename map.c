@@ -98,6 +98,6 @@ intVec2 getMapPos(t_data *data, int posX, int posY)
     }
   }
   if (mapPos.x == ERROR.x)
-    {printf("coord not in map");return ERROR;}
+    {printf("coord not in map\n");return ERROR;}
   return mapPos;
 }
