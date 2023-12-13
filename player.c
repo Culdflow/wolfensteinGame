@@ -21,10 +21,10 @@ void playerMove(t_data *data, double step)
 //draw player to screen
 void drawPlayer(t_data *data, t_image *img, t_player *pl)
 {
-  my_mlx_pixel_put(img, pl->pos->x, pl->pos->y, 0x00FF0050);
-  my_mlx_pixel_put(img, pl->pos->x+1, pl->pos->y, 0x00FF0050);
-  my_mlx_pixel_put(img, pl->pos->x-1, pl->pos->y, 0x00FF0050);
-  my_mlx_pixel_put(img, pl->pos->x, pl->pos->y+1, 0x00FF0050);
-  my_mlx_pixel_put(img, pl->pos->x, pl->pos->y-1, 0x00FF0050);
+  my_mlx_pixel_put(data, img, pl->pos->x, pl->pos->y, 0x00FF0050);
+  my_mlx_pixel_put(data, img, pl->pos->x+1, pl->pos->y, 0x00FF0050);
+  my_mlx_pixel_put(data, img, pl->pos->x-1, pl->pos->y, 0x00FF0050);
+  my_mlx_pixel_put(data, img, pl->pos->x, pl->pos->y+1, 0x00FF0050);
+  my_mlx_pixel_put(data, img, pl->pos->x, pl->pos->y-1, 0x00FF0050);
 
 }

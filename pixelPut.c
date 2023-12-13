@@ -5,12 +5,14 @@
 #include <stdlib.h>
 
 //draws a pixel on the screen
-void	my_mlx_pixel_put(t_image *data, int x, int y, int color)
+void	my_mlx_pixel_put(t_data *data, t_image *img, int x, int y, int color)
 {
 	char	*dst;
-
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
+  if (!(x < 0 || x > data->sizeX) && !(y < 0 || y > data->sizeY))
+  {
+    dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
+	  *(unsigned int*)dst = color;
+  }
 }
 
 
@@ -84,7 +86,7 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
         for(int x = strtPix.x; x < endPix.x; x++)
         {
           intStep = (int)step;
-          my_mlx_pixel_put(img, x, intStep, color);
+          my_mlx_pixel_put(data, img, x, intStep, color);
           step += diffY / diffX;
         }
 
@@ -98,7 +100,7 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
         for(int y = strtPix.y; y < endPix.y; y++)
         {
           intStep = (int)step;
-          my_mlx_pixel_put(img, intStep, y, color);
+          my_mlx_pixel_put(data, img, intStep, y, color);
           step += diffX / diffY;          
         }
       }
@@ -132,7 +134,7 @@ void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int 
     {
         for (int y = Y1; y <= Y2; y++)
         {
-            my_mlx_pixel_put(img, x, y, color);
+            my_mlx_pixel_put(data, img, x, y, color);
         }
 
     }
@@ -140,11 +142,11 @@ void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int 
 
 
 
-void clearImage(t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT)
+void clearImage(t_data *data, t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {
   for(int x = 0; x < WINDOW_WIDTH; x++)
   {
     for(int y = 0; y < WINDOW_HEIGHT; y++)
-      my_mlx_pixel_put(img, x, y, 0x00000000);
+      my_mlx_pixel_put(data, img, x, y, 0x00000000);
   }
 }

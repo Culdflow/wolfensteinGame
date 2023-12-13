@@ -50,7 +50,7 @@ int	render(t_data *data)
     /* if window has been destroyed, we don't want to put the pixel ! */
     if (data->win_ptr != NULL)
     {
-      clearImage(data->current_img, WINDOW_WIDTH, WINDOW_HEIGHT);
+      clearImage(data, data->current_img, WINDOW_WIDTH, WINDOW_HEIGHT);
       //track mouse position
       mouse_pos(data);
       createMapImg(data, data->current_img, data->map, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_OFFSET); 
@@ -147,6 +147,8 @@ int	main(void)
     data.last_img = NULL;
     data.current_img = &img;
     data.img2 = &img2;
+    data.sizeX = WINDOW_WIDTH;
+    data.sizeY = WINDOW_HEIGHT;
     
 
     //mlx_put_image_to_window(data.mlx_ptr, data.win_ptr, &img.img, 0, 0);   

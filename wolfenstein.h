@@ -91,8 +91,8 @@ void createRectangle(t_data *data, t_image *img, int x1_, int y1_, int x2_, int 
 void createLine(t_data *data, t_image *img, int x1_, int y1_, int x2_, int y2_, int color);
 void highlight_box(t_data *data, t_image *img);
 void drawSquare(t_data *data, t_image *img, int x1, int y1, int x2, int y2, int color);
-void my_mlx_pixel_put(t_image *data, int x, int y, int color);
-void clearImage(t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT);
+void my_mlx_pixel_put(t_data *data, t_image *img, int x, int y, int color);
+void clearImage(t_data *data, t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT);
 //player.c
 void playerMove(t_data *data, double step);
 void drawPlayer(t_data *data, t_image *img, t_player *pl);

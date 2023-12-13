@@ -7,7 +7,6 @@
 
 ray createRay(t_data *data, Vec2 *vecStart, int angle)
 {
-  
   printf("angle = %d\n", angle);
 
   //create ray output
@@ -42,8 +41,8 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   else if (angle < - 90 || angle > 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][0]-1; interX.y = vecStart->y + abs(vecStart->x - interX.x) / tan(angleRad);}
   else interX.x = vecStart->x;
   //setup x pos
-    interX.y = vecStart->x - abs(vecStart->x - interX.x) / tan(angleRad);
-    interY.x = vecStart->y - abs(vecStart->y - interY.y) / tan(angleRad);
+  interX.y = vecStart->x - abs(vecStart->x - interX.x) / tan(angleRad);
+  interY.x = vecStart->y - abs(vecStart->y - interY.y) / tan(angleRad);
   
   //setup vec map pos position of interY in map
   intVec2 vecMapPosY;
@@ -91,7 +90,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
 
 
 
-  out.endPos = &interX;
+  out.endPos = &interY;
   drawRay(data, &out, 0x00FF00FF);
 }
 
