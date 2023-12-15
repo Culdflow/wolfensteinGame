@@ -53,6 +53,18 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   ERROR.x = 0;
   ERROR.y = 0;
 
+  Vec2 lengthX;
+  lengthX.x = abs(interX.x - vecStart->x);
+  lengthX.y = abs(interX.y - vecStart->y);
+
+  Vec2 lengthY;
+  lengthY.x = abs(interY.x - vecStart->x);
+  lengthY.y = abs(interY.y - vecStart->y);
+
+  Vec2 hyp;
+  hyp.x = sqrt(pow(lengthX.x,2) + pow(lengthX.y,2));
+  hyp.y = sqrt(pow(lengthY.x,2) + pow(lengthY.y,2));
+
   for (int i = 0;i < dof; i++)
   {
     
@@ -64,26 +76,32 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
     if (vecMapPosX.x == -1) {printf("ERROR vecMapPosX ray end pos not in map\n"); vecMapPosX = ERROR;}
     if (data->map->map[vecMapPosY.y][vecMapPosY.x] == 1) {i = dof; printf("found wall in y\n");}
     if (data->map->map[vecMapPosX.y][vecMapPosX.x] == 1) {i = dof; printf("found wall in x\n");}
+    if (hyp.y < hyp.x)
+    {
+      if (angle < 0) 
+      {
+        interY.y -= unitStep.y;
+        interY.x -= unitStep.y/tan(angleRad);   
+      }
+      else if (angle > 0) 
+      {
+        interY.y += unitStep.y;
+        interY.x += unitStep.y/tan(angleRad);
+      }
+    }
+    else 
+    {
+      if (angle > - 90 && angle < 90)
+      {
+        interX.x += unitStep.x;
+        interX.y += unitStep.x*tan(angleRad);
+      }
+      else if (angle < - 90 || angle > 90)
+      {
+        interX.x -= unitStep.x;
+        interX.y -= unitStep.x*tan(angleRad);
+      }
 
-    if (angle < 0) 
-    {
-      interY.y -= unitStep.y;
-      interY.x -= unitStep.y/tan(angleRad);   
-    }
-    else if (angle > 0) 
-    {
-      interY.y += unitStep.y;
-      interY.x += unitStep.y/tan(angleRad);
-    }
-    if (angle > - 90 && angle < 90)
-    {
-      interX.x += unitStep.x;
-      interX.y += unitStep.x*tan(angleRad);
-    }
-    else if (angle < - 90 || angle > 90)
-    {
-      interX.x -= unitStep.x;
-      interX.y -= unitStep.x*tan(angleRad);
     }
 
   }

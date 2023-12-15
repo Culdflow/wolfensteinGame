@@ -1,6 +1,5 @@
 #ifndef _Wolfenstein_H
 #define _Wolfenstein_H
-
 //---------------------------DEFINE STRUCTS------------------------------------------------
 
 //define intVector2 struct
