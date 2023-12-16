@@ -35,10 +35,10 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   unitStep.y = data->map->map_coord[0][0][3] - data->map->map_coord[0][0][1];  
 
   //create dof depth of field
-  int dof = 3;
+  int dof = 0;
 
   //convert angle to rad
-  float angleRad = (angle * PI) / 180; 
+  float angleRad = (abs(angle) * PI) / 180; 
 
   //first intersection
   Vec2 interY;
@@ -55,15 +55,15 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   //setup interY wich checks for collisions on y
   printf("setting up interY...\n");
   if (angle < 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][1]-1; interY.x = vecStart->x - abs(vecStart->y - interY.y) / tan(angleRad);}
-  else if (angle > 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][3]+1; interY.x = vecStart->x + abs(vecStart->y - interY.y) / tan(angleRad);}
+  else if (angle > 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][3]+1; interY.x = vecStart->x + abs(vecStart->y - interY.y) /tan(angleRad);}
   else interY.y = vecStart->y; 
   printf("done\n");
 
 
   //get interX wich checks for collisions on X
   printf("setting up interX....\n");
-  if (angle > - 90 && angle < 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][2]+1; interX.y = vecStart->y - abs(vecStart->x - interX.x) / tan(angleRad);}
-  else if (angle < - 90 || angle > 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][0]-1; interX.y = vecStart->y + abs(vecStart->x - interX.x) / tan(angleRad);}
+  if (angle > - 90 && angle < 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][2]+1; interX.y = vecStart->y - abs(vecStart->x - interX.x) * tan(angleRad + (PI/2));}
+  else if (angle < - 90 || angle > 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][0]-1; interX.y = vecStart->y + abs(vecStart->x - interX.x) * tan(angleRad + (PI/2));}
   else interX.x = vecStart->x;
   printf("done\n");
   
@@ -106,8 +106,8 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
 
     //if pos not in map
     printf("returning error if pos not in map..\n");
-    if (vecMapPosY.x == -1) {return rayERROR;}
-    if (vecMapPosX.x == -1) {return rayERROR;}
+    if (vecMapPosY.x == -1) {printf("interY x = %d  ", (int)interY.x); printf("interY y = %d\n", (int)interY.y); return rayERROR;}
+    if (vecMapPosX.x == -1) {printf("interX x = %d  ", (int)interX.x); printf("interX y = %d\n", (int)interX.y);  return rayERROR;}
     printf("NO ERROR\n");
 
     //IF HIT WALL
@@ -147,7 +147,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
         printf("LOOKING RIGHT\n");
         printf("updating interX value...\n");
         interX.x += unitStep.x;
-        interX.y += unitStep.x*tan(angleRad);
+        interX.y += unitStep.x * tan(angleRad + (PI/2));
         printf("done\n");
       }
       else if (angle < - 90 || angle > 90)
@@ -155,7 +155,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
         printf("LOOKING LEFT\n");
         printf("updating interX value...\n");
         interX.x -= unitStep.x;
-        interX.y -= unitStep.x*tan(angleRad);
+        interX.y -= unitStep.x * tan(angleRad+ (PI/2));
         printf("done\n");
       }
     }
@@ -165,9 +165,10 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
  
 
   //set ray out dependant on wich ray is shorter
-  if (hyp.y < hyp.x) out.endPos = &interY;
-  else out.endPos = &interX;
- 
+  //if (hyp.y < hyp.x) out.endPos = &interY;
+  //else out.endPos = &interX;
+  out.endPos = &interX;
+  
   //check limits
   if (out.endPos->x > data->sizeX) out.endPos->x = data->sizeX;
   if (out.endPos->x < 0) out.endPos->x = 0;
@@ -175,6 +176,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   if (out.endPos->y < 0) out.endPos->y = 0;
 
   //----------------DEBUGGING-------------------
+  printf("angle = %d\n", angle);
   printf("startPos X = %f\n", vecStart->x);
   printf("startPos Y = %f\n", vecStart->y);
   printf("endPos X = %f\n", out.endPos->x);

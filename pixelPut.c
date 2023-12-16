@@ -32,7 +32,7 @@ void highlight_box(t_data *data, t_image *img)
   }
 }
 
-//draw highlights when mouse is on them
+//draw square
 void drawSquare(t_data *data, t_image *img, int x1, int y1, int x2, int y2, int color)
 {
   // draw lines

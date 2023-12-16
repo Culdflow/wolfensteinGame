@@ -2,18 +2,30 @@
 #define _Wolfenstein_H
 //---------------------------DEFINE STRUCTS------------------------------------------------
 
+//define button struct
+typedef struct s_button
+{
+    int   borderColor;
+    int   insideColor;
+    int   borderWidth;
+    int   posX;
+    int   posY;
+    int   sizeX;
+    int   sizeY;
+}   button;
+
 //define intVector2 struct
 typedef struct s_intVec2
 {
-  int x;
-  int y;
-} intVec2;
+    int   x;
+    int   y;
+}   intVec2;
 
 //define Vector2 struct
 typedef struct s_vector2
 {
-    double x;
-    double y;
+    double  x;
+    double  y;
 }   Vec2;
 
 //define struct ray
@@ -21,8 +33,8 @@ typedef struct s_ray
 {
     Vec2 *startPos;
     Vec2 *endPos;
-    int angle;
-    float length;
+    int     angle;
+    float   length;
 }   ray;
 
 
@@ -43,10 +55,10 @@ typedef struct s_image
 //define struct t_map
 typedef struct s_map
 {
-    int x;
-    int y;
-    int map[20][20];
-    int map_coord[20][20][4];
+    int     x;
+    int     y;
+    int     map[20][20];
+    int     map_coord[20][20][4];
 }   t_map;
 
 
@@ -54,25 +66,25 @@ typedef struct s_map
 typedef struct s_player
 {
     Vec2 *pos;
-    int speed;
-    int dir;
+    int     speed;
+    int     dir;
 } t_player;
 
 
 //define struct t_data
 typedef struct s_data
 {
-    void	*mlx_ptr;
-    void	*win_ptr;
-    int sizeX;
-    int sizeY;
-    t_map *map;
-    int mouseX;
-    int mouseY;
-    int oldMouseX;
-    t_image *current_img;
-    t_image *img2;
-    t_image *last_img;
+    void     *mlx_ptr;
+    void     *win_ptr;
+    int         sizeX;
+    int         sizeY;
+    t_map    *map;
+    int         mouseX;
+    int         mouseY;
+    int         oldMouseX;
+    t_image  *current_img;
+    t_image  *img2;
+    t_image  *last_img;
     t_player *player;
 }	t_data;
 
