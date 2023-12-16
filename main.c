@@ -13,6 +13,8 @@
 
 #define MLX_ERROR 1
 
+ray currentRay;
+
 //handles keypresses 
 int	handle_keypress(int keysym, t_data *data)
 {
@@ -59,7 +61,8 @@ int	render(t_data *data)
       //if image did not change from last frame don't print it to the screen
       //if (data->last_img != data->current_img)
       //{
-        createRay(data, data->player->pos, data->player->dir);
+        currentRay = createRay(data, data->player->pos, data->player->dir);       
+        drawRay(data, &currentRay, 0x00FF00FF);
         //createLine(data, data->current_img, 0, 0, data->mouseX, data->mouseY, 0x00FF00FF);
         mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->current_img->img, 0, 0);      
         data->last_img = data->current_img;

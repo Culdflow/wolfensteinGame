@@ -8,11 +8,8 @@
 void	my_mlx_pixel_put(t_data *data, t_image *img, int x, int y, int color)
 {
 	char	*dst;
-  if (!(x < 0 || x > data->sizeX) && !(y < 0 || y > data->sizeY))
-  {
     dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
 	  *(unsigned int*)dst = color;
-  }
 }
 
 
@@ -81,6 +78,10 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
         if (diffX > 0) {strtPix.x = x1_; strtPix.y = y1_; endPix.x = x2_; endPix.y = y2_;}
         else {strtPix.x = x2_; strtPix.y = y2_; endPix.x = x1_; endPix.y = y1_;}
         step = strtPix.y;
+        if (endPix.x > data->sizeX) endPix.x = data->sizeX;
+        if (endPix.y > data->sizeY) endPix.y = data->sizeY;
+        if (endPix.x < 0) endPix.x = 0;
+        if (endPix.y < 0) endPix.y = 0;
         
 
         for(int x = strtPix.x; x < endPix.x; x++)
