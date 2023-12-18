@@ -19,7 +19,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   ERRstart.x = 50;
   ERRstart.y = 50;
   Vec2 ERRend;
-  ERRend.x = 500;
+  ERRend.x = 950;
   ERRend.y = 50;
   rayERROR.startPos = &ERRstart;
   rayERROR.endPos = &ERRend;
@@ -35,7 +35,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   unitStep.y = data->map->map_coord[0][0][3] - data->map->map_coord[0][0][1];  
 
   //create dof depth of field
-  int dof = 0;
+  int dof = 1;
 
   //convert angle to rad
   float angleRad = (abs(angle) * PI) / 180; 
@@ -51,6 +51,8 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
 
 
   if (playerMapPos.x == -1) return rayERROR;
+
+//----------------------SETUP BASE RAYCAST VALUES---------------------------------------------------------------------
 
   //setup interY wich checks for collisions on y
   printf("setting up interY...\n");
@@ -69,11 +71,14 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   
   //setup x pos
   printf("setting up y pos for interX...\n");
-  interX.y = vecStart->x + abs(vecStart->x - interX.x) * tan(angleRad);
+  if (angle < 0) interX.y = vecStart->y + (vecStart->x - interX.x) * tan(angleRad);
+  else if (angle > 0) interX.y = vecStart->y - (vecStart->x - interX.x) * tan(angleRad);
   printf("done\n");
   printf("setting up x pos for interY...\n");
   interY.x = vecStart->y + abs(vecStart->y - interY.y) / tan(angleRad);
   printf("done\n");
+
+//----------------------------------------------------------------------------------------------------------------------
 
   //setup vec map pos position of interY in map
   intVec2 vecMapPosY;
@@ -93,7 +98,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   hyp.x = sqrt(pow(lengthX.x,2) + pow(lengthX.y,2));
   hyp.y = sqrt(pow(lengthY.x,2) + pow(lengthY.y,2));
 
-
+//---------------------------------------------LOOP----------------------------------------------------------------------
   printf("going into loop...\n");
   for (int i = 0;i < dof; i++)
   {
@@ -147,7 +152,8 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
         printf("LOOKING RIGHT\n");
         printf("updating interX value...\n");
         interX.x += unitStep.x;
-        interX.y += unitStep.x * tan(angleRad);
+        if (angle < 0) interX.y = vecStart->y + (vecStart->x - interX.x) * tan(angleRad);
+        else if (angle > 0) interX.y = vecStart->y - (vecStart->x - interX.x) * tan(angleRad);
         printf("done\n");
       }
       else if (angle < - 90 || angle > 90)
@@ -155,19 +161,20 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
         printf("LOOKING LEFT\n");
         printf("updating interX value...\n");
         interX.x -= unitStep.x;
-        interX.y -= unitStep.x * tan(angleRad);
+        if (angle < 0) interX.y = vecStart->y + (vecStart->x - interX.x) * tan(angleRad);
+        else if (angle > 0) interX.y = vecStart->y - (vecStart->x - interX.x) * tan(angleRad);
         printf("done\n");
       }
     }
 
   }
   
- 
+//-------------------------------------------------------------------------------------------------------------------------------------
 
   //set ray out dependant on wich ray is shorter
-  //if (hyp.y < hyp.x) out.endPos = &interY;
-  //else out.endPos = &interX;
-  out.endPos = &interX;
+  if (hyp.y < hyp.x) out.endPos = &interY;
+  else out.endPos = &interX;
+  //out.endPos = &interY;
   
   //check limits
   if (out.endPos->x > data->sizeX) out.endPos->x = data->sizeX;
