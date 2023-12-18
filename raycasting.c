@@ -54,25 +54,25 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
 
   //setup interY wich checks for collisions on y
   printf("setting up interY...\n");
-  if (angle < 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][1]-1; interY.x = vecStart->x - abs(vecStart->y - interY.y) / tan(angleRad);}
-  else if (angle > 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][3]+1; interY.x = vecStart->x + abs(vecStart->y - interY.y) /tan(angleRad);}
+  if (angle < 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][1]-1;}
+  else if (angle > 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][3]+1;}
   else interY.y = vecStart->y; 
   printf("done\n");
 
 
   //get interX wich checks for collisions on X
   printf("setting up interX....\n");
-  if (angle > - 90 && angle < 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][2]+1; interX.y = vecStart->y - abs(vecStart->x - interX.x) * tan(angleRad + (PI/2));}
-  else if (angle < - 90 || angle > 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][0]-1; interX.y = vecStart->y + abs(vecStart->x - interX.x) * tan(angleRad + (PI/2));}
+  if (angle > - 90 && angle < 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][2]+1;}
+  else if (angle < - 90 || angle > 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][0]-1;}
   else interX.x = vecStart->x;
   printf("done\n");
   
   //setup x pos
   printf("setting up y pos for interX...\n");
-  interX.y = vecStart->x - abs(vecStart->x - interX.x) / tan(angleRad);
+  interX.y = vecStart->x + abs(vecStart->x - interX.x) * tan(angleRad);
   printf("done\n");
   printf("setting up x pos for interY...\n");
-  interY.x = vecStart->y - abs(vecStart->y - interY.y) / tan(angleRad);
+  interY.x = vecStart->y + abs(vecStart->y - interY.y) / tan(angleRad);
   printf("done\n");
 
   //setup vec map pos position of interY in map
@@ -147,7 +147,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
         printf("LOOKING RIGHT\n");
         printf("updating interX value...\n");
         interX.x += unitStep.x;
-        interX.y += unitStep.x * tan(angleRad + (PI/2));
+        interX.y += unitStep.x * tan(angleRad);
         printf("done\n");
       }
       else if (angle < - 90 || angle > 90)
@@ -155,7 +155,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
         printf("LOOKING LEFT\n");
         printf("updating interX value...\n");
         interX.x -= unitStep.x;
-        interX.y -= unitStep.x * tan(angleRad+ (PI/2));
+        interX.y -= unitStep.x * tan(angleRad);
         printf("done\n");
       }
     }
