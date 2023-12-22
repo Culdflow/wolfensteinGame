@@ -12,6 +12,7 @@ typedef struct s_button
     int   posY;
     int   sizeX;
     int   sizeY;
+    void  (*function)(void);
 }   button;
 
 //define intVector2 struct
@@ -112,6 +113,11 @@ void updatePlayerDir(t_data *data);
 //raycasting.c
 ray createRay(t_data *data, Vec2 *start, int angle);
 void drawRay(t_data *data, ray *myRay, int color);
+//button.c
+button createButton(int BDcolor, int INcolor, int BDwidth, int posX, int posY, int sizeX, int sizeY, void (*function)(void));
+void drawButton(t_data *data, t_image *img, button *butt);
+//buttonCommands.c
+void buttonSwitch(void);
 #endif
 
 

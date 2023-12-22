@@ -57,6 +57,8 @@ int	render(t_data *data)
       mouse_pos(data);
       createMapImg(data, data->current_img, data->map, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_OFFSET); 
       highlight_box(data, data->current_img);
+      button myButton = createButton(0x00FF0000, 0x0000FF00, 10, 0, 0, 50, 50, buttonSwitch); 
+      drawButton(data, data->current_img, &myButton);
       drawPlayer(data, data->current_img, data->player); 
       //if image did not change from last frame don't print it to the screen
       //if (data->last_img != data->current_img)

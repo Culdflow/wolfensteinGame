@@ -72,10 +72,10 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   //setup x pos
   printf("setting up y pos for interX...\n");
   if (angle < 0) interX.y = vecStart->y + (vecStart->x - interX.x) * tan(angleRad);
-  else if (angle > 0) interX.y = vecStart->y - (vecStart->x - interX.x) * tan(angleRad);
+  else interX.y = vecStart->y - (vecStart->x - interX.x) * tan(angleRad);
   printf("done\n");
   printf("setting up x pos for interY...\n");
-  interY.x = vecStart->y + abs(vecStart->y - interY.y) / tan(angleRad);
+  interY.x = vecStart->x + abs(vecStart->y - interY.y) / tan(angleRad);
   printf("done\n");
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -105,39 +105,34 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
     
     //find pos in map
     printf("finding interX and interY pos in map...\n");
+    
+    printf("interY.y = %f\n", interY.y);
+    printf("interY.x = %f\n", interY.x);
+    printf("interX.y = %f\n", interX.y);
+    printf("interX.x = %f\n", interX.x);
+    
     vecMapPosY = getMapPos(data, (int)interY.y, (int)interY.x);
     vecMapPosX = getMapPos(data, (int)interX.y, (int)interX.x);
     printf("done\n");
 
     //if pos not in map
     printf("returning error if pos not in map..\n");
-    if (vecMapPosY.x == -1) {printf("interY x = %d  ", (int)interY.x); printf("interY y = %d\n", (int)interY.y); return rayERROR;}
-    if (vecMapPosX.x == -1) {printf("interX x = %d  ", (int)interX.x); printf("interX y = %d\n", (int)interX.y);  return rayERROR;}
+    if (vecMapPosY.x == -1) {printf("interY x = %d  ", (int)interY.x); printf("interY y = %d\n", (int)interY.y); /*return rayERROR;*/}
+    if (vecMapPosX.x == -1) {printf("interX x = %d  ", (int)interX.x); printf("interX y = %d\n", (int)interX.y); /*return rayERROR;*/}
     printf("NO ERROR\n");
 
     //IF HIT WALL
     printf("checking if ray hit wall...\n");
-    if (data->map->map[vecMapPosY.y][vecMapPosY.x] == 1) {i = dof; printf("found wall in y\n");}
-    if (data->map->map[vecMapPosX.y][vecMapPosX.x] == 1) {i = dof; printf("found wall in x\n");}
+    if (data->map->map[vecMapPosY.y][vecMapPosY.x] == 1) {i = dof; printf("found wall in y\n"); printf("map pos Y = %d\n", vecMapPosY.y); printf("map pos X = %d\n", vecMapPosY.x);}
+    if (data->map->map[vecMapPosX.y][vecMapPosX.x] == 1) {i = dof; printf("found wall in x\n"); printf("map pos Y = %d\n", vecMapPosX.y); printf("map pos X = %d\n", vecMapPosX.x);}
     printf("done\n");
 
-    lengthX.x = abs(interX.x - vecStart->x);
-    lengthX.y = abs(interX.y - vecStart->y);
-
-    lengthY.x = abs(interY.x - vecStart->x);
-    lengthY.y = abs(interY.y - vecStart->y);
-
-    hyp.x = abs(sqrt(pow(lengthX.x + lengthX.y,2)));
-    hyp.y = abs(sqrt(pow(lengthY.x + lengthY.y,2)));
-    
 
     printf("hypX = %f\n", hyp.x);
     printf("hypY = %f\n", hyp.y);
-    printf("checking if hyp y is smaller than x...\n");
-    if (hyp.y < hyp.x)
+    printf("checking if looking up...\n");
+    if (i != dof)
     {
-      printf("IT IS\n");
-      printf("checking if looking up...\n");
       if (angle < 0) 
       {
         printf("LOOKING UP\n");
@@ -153,11 +148,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
         interY.y += unitStep.y;
         interY.x += unitStep.y/tan(angleRad);
         printf("done\n");
-      }
-    }
-    else 
-    {
-      printf("ITS NOT\n");
+      } 
       printf("CHECKING IF LOOKING RIGHT\n");
       if (angle > - 90 && angle < 90)
       {
@@ -165,7 +156,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
         printf("updating interX value...\n");
         interX.x += unitStep.x;
         if (angle < 0) interX.y = vecStart->y + (vecStart->x - interX.x) * tan(angleRad);
-        else if (angle > 0) interX.y = vecStart->y - (vecStart->x - interX.x) * tan(angleRad);
+        else interX.y = vecStart->y - (vecStart->x - interX.x) * tan(angleRad);
         printf("done\n");
       }
       else if (angle < - 90 || angle > 90)
@@ -174,11 +165,19 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
         printf("updating interX value...\n");
         interX.x -= unitStep.x;
         if (angle < 0) interX.y = vecStart->y + (vecStart->x - interX.x) * tan(angleRad);
-        else if (angle > 0) interX.y = vecStart->y - (vecStart->x - interX.x) * tan(angleRad);
+        else interX.y = vecStart->y - (vecStart->x - interX.x) * tan(angleRad);
         printf("done\n");
       }
     }
+    lengthX.x = abs(interX.x - vecStart->x);
+    lengthX.y = abs(interX.y - vecStart->y);
 
+    lengthY.x = abs(interY.x - vecStart->x);
+    lengthY.y = abs(interY.y - vecStart->y);
+
+    hyp.x = abs(sqrt(pow(lengthX.x + lengthX.y,2)));
+    hyp.y = abs(sqrt(pow(lengthY.x + lengthY.y,2)));
+  
   }
   
 //-------------------------------------------------------------------------------------------------------------------------------------
@@ -186,7 +185,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   //set ray out dependant on wich ray is shorter
   if (hyp.y < hyp.x) out.endPos = &interY;
   else out.endPos = &interX;
-  //out.endPos = &interY;
+  //out.endPos = &interX;
   
   //check limits
   if (out.endPos->x > data->sizeX) out.endPos->x = data->sizeX;
