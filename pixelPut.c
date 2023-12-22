@@ -78,6 +78,8 @@ void createLine(t_data *data,t_image *img, int x1_, int y1_, int x2_, int y2_, i
         if (diffX > 0) {strtPix.x = x1_; strtPix.y = y1_; endPix.x = x2_; endPix.y = y2_;}
         else {strtPix.x = x2_; strtPix.y = y2_; endPix.x = x1_; endPix.y = y1_;}
         step = strtPix.y;
+
+        //give limits to screen size
         if (endPix.x > data->sizeX) endPix.x = data->sizeX;
         if (endPix.y > data->sizeY) endPix.y = data->sizeY;
         if (endPix.x < 0) endPix.x = 0;
