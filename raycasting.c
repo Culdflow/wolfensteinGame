@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #define PI 3.141592654
-#define rayLength 100
+#define maxRayLength 350
 
 ray createRay(t_data *data, Vec2 *vecStart, int angle)
 {
@@ -83,8 +83,6 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   //setup vec map pos position of interY in map
   intVec2 vecMapPosY;
   intVec2 vecMapPosX;
-  
-
 
   Vec2 lengthX;
   lengthX.x = abs(interX.x - vecStart->x);
@@ -97,6 +95,10 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   Vec2 hyp;
   hyp.x = abs(sqrt(pow(lengthX.x + lengthX.y,2)));
   hyp.y = abs(sqrt(pow(lengthY.x + lengthY.y,2)));
+
+  Vec2 ogHyp;
+  ogHyp.x = hyp.x;
+  ogHyp.y = hyp.y;
   
   //if found wall == 1 found wall in x if found wall == 2 found wall in y
   int foundWall = 0;
@@ -126,8 +128,22 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
 
     //IF HIT WALL
     printf("checking if ray hit wall...\n");
-    if (data->map->map[vecMapPosY.y][vecMapPosY.x] == 1) {foundWall += 2; printf("found wall in y\n"); printf("map pos Y = %d\n", vecMapPosY.y); printf("map pos X = %d\n", vecMapPosY.x);}
-    if (data->map->map[vecMapPosX.y][vecMapPosX.x] == 1) {foundWall += 1; printf("found wall in x\n"); printf("map pos Y = %d\n", vecMapPosX.y); printf("map pos X = %d\n", vecMapPosX.x);}
+    if (data->map->map[vecMapPosY.y][vecMapPosY.x] == 1) 
+    {
+      if (foundWall != 2) foundWall += 2; 
+      printf("found wall in y\n"); 
+      printf("map pos Y = %d\n", vecMapPosY.y); 
+      printf("map pos X = %d\n", vecMapPosY.x);
+    }
+
+    if (data->map->map[vecMapPosX.y][vecMapPosX.x] == 1) 
+    {
+      if (foundWall != 1) foundWall += 1; 
+      printf("found wall in x\n"); 
+      printf("map pos Y = %d\n", vecMapPosX.y); 
+      printf("map pos X = %d\n", vecMapPosX.x);
+    }
+
     printf("done\n");
 
     lengthX.x = abs(interX.x - vecStart->x);
@@ -193,9 +209,13 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
 //-------------------------------------------------------------------------------------------------------------------------------------
 
   //set ray out dependant on wich ray is shorter
-  if (hyp.y < hyp.x) out.endPos = &interY;
-  else out.endPos = &interX;
-  //out.endPos = &interX;
+  if (foundWall == 2 && hyp.y < ((dof - 1) * unitStep.y + ogHyp.y)) out.endPos = &interY;
+  else if (foundWall == 1 && hyp.x < ((dof - 1) * unitStep.x + ogHyp.x)) out.endPos = &interX;
+  else 
+  {
+    if (hyp.y < hyp.x) out.endPos = &interY;
+    else out.endPos = &interX;
+  }
   
   //check limits
   if (out.endPos->x > data->sizeX) out.endPos->x = data->sizeX;
