@@ -56,16 +56,16 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
 
   //setup interY wich checks for collisions on y
   printf("setting up interY...\n");
-  if (angle < 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][1];}
-  else if (angle > 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][3];}
+  if (angle < 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][1]-1;}
+  else if (angle > 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][3]+1;}
   else interY.y = vecStart->y; 
   printf("done\n");
 
 
   //get interX wich checks for collisions on X
   printf("setting up interX....\n");
-  if (angle > - 90 && angle < 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][2];}
-  else if (angle < - 90 || angle > 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][0];}
+  if (angle > - 90 && angle < 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][2]+1;}
+  else if (angle < - 90 || angle > 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][0]-1;}
   else interX.x = vecStart->x;
   printf("done\n");
   
@@ -93,8 +93,8 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   lengthY.y = abs(interY.y - vecStart->y);
   
   Vec2 hyp;
-  hyp.x = abs(sqrt(pow(lengthX.x + lengthX.y,2)));
-  hyp.y = abs(sqrt(pow(lengthY.x + lengthY.y,2)));
+  hyp.x = hypot(lengthX.x, lengthX.y);
+  hyp.y = hypot(lengthY.x, lengthY.y);
 
   Vec2 ogHyp;
   ogHyp.x = hyp.x;
@@ -130,7 +130,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
     printf("checking if ray hit wall...\n");
     if (data->map->map[vecMapPosY.y][vecMapPosY.x] == 1) 
     {
-      if (foundWall != 2) foundWall += 2; 
+      if (foundWall != 2 && foundWall != 3) foundWall += 2; 
       printf("found wall in y\n"); 
       printf("map pos Y = %d\n", vecMapPosY.y); 
       printf("map pos X = %d\n", vecMapPosY.x);
@@ -138,7 +138,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
 
     if (data->map->map[vecMapPosX.y][vecMapPosX.x] == 1) 
     {
-      if (foundWall != 1) foundWall += 1; 
+      if (foundWall != 1 && foundWall != 3) foundWall += 1; 
       printf("found wall in x\n"); 
       printf("map pos Y = %d\n", vecMapPosX.y); 
       printf("map pos X = %d\n", vecMapPosX.x);
@@ -146,12 +146,8 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
 
     printf("done\n");
 
-    lengthX.x = abs(interX.x - vecStart->x);
-    lengthX.y = abs(interX.y - vecStart->y);
 
-    lengthY.x = abs(interY.x - vecStart->x);
-    lengthY.y = abs(interY.y - vecStart->y);
-
+    
     printf("hypX = %f\n", hyp.x);
     printf("hypY = %f\n", hyp.y);
     printf("foundWall == %d\n", foundWall);
@@ -174,7 +170,7 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
         interY.x += unitStep.y/tan(angleRad);
         printf("done\n");
       }
-      hyp.y = abs(sqrt(pow(lengthY.x + lengthY.y,2)));
+      
 
     }
     if (foundWall < 1 || foundWall == 2)
@@ -199,23 +195,33 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
         else interX.y -= unitStep.y * tan(angleRad);
         printf("done\n");
       }
-      hyp.x = abs(sqrt(pow(lengthX.x + lengthX.y,2)));
 
     }
+    lengthX.x = abs(interX.x - vecStart->x);
+    lengthX.y = abs(interX.y - vecStart->y);
 
+    lengthY.x = abs(interY.x - vecStart->x);
+    lengthY.y = abs(interY.y - vecStart->y);
+
+    hyp.y = hypot(lengthY.x, lengthY.y);
+    hyp.x = hypot(lengthX.x, lengthX.y);
          
   }
   
 //-------------------------------------------------------------------------------------------------------------------------------------
 
   //set ray out dependant on wich ray is shorter
-  if (foundWall == 2 && hyp.y < ((dof - 1) * unitStep.y + ogHyp.y)) out.endPos = &interY;
-  else if (foundWall == 1 && hyp.x < ((dof - 1) * unitStep.x + ogHyp.x)) out.endPos = &interX;
+  if (foundWall == 2 && hyp.y < hyp.x) {out.endPos = &interY; printf("drawing interY");}
+  else if (foundWall == 1 && hyp.x < hyp.y) {out.endPos = &interX; printf("drawing interX");}
   else 
   {
     if (hyp.y < hyp.x) out.endPos = &interY;
     else out.endPos = &interX;
   }
+
+ //drawSquare(data, data->current_img, interX.x - 2, interX.y - 2, interX.x + 2, interX.y + 2, 0x00FF0000); 
+ //drawSquare(data, data->current_img, interY.x - 2, interY.y - 2, interY.x + 2, interY.y + 2, 0x00FF0000); 
+  
   
   //check limits
   if (out.endPos->x > data->sizeX) out.endPos->x = data->sizeX;
@@ -227,8 +233,11 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   printf("angle = %d\n", angle);
   printf("startPos X = %f\n", vecStart->x);
   printf("startPos Y = %f\n", vecStart->y);
-  printf("endPos X = %f\n", out.endPos->x);
-  printf("endPos Y = %f\n", out.endPos->y);
+  printf("interX X = %f\n", interX.x);
+  printf("interX Y = %f\n", interX.y);
+  printf("interY X = %f\n", interY.x);
+  printf("interY Y = %f\n", interY.y);
+
   //--------------------------------------------
 
 
