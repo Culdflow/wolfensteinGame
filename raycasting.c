@@ -5,24 +5,45 @@
 #define PI 3.141592654
 #define maxRayLength 350
 
-ray createRay(t_data *data, Vec2 *vecStart, int angle)
+//create ray list
+ray *createRayList(t_data *data, int angle, ray *OGRay,  ray *ray, int i)
 {
-  printf("angle = %d\n", angle);
+  printf("creating ray nb %d\n", i);
 
+  if (i == data->player->fov - 1)
+  {
+    printf("last ray\n");
+    ray = createRay(data, data->player->pos, angle + i);
+    ray->tag = 'e';
+    printf("tag done\n");
+    return OGRay;
+  }
+  ray = createRay(data, data->player->pos, angle + i);
+  return createRayList(data, angle, OGRay, ray->nextRay, i+1);
+}
+
+
+//creates a ray
+ray *createRay(t_data *data, Vec2 *vecStart, int angle)
+{
+  printf("new ray\n");
   //create ray output
-  ray out;
-  out.startPos = vecStart;
-
+  printf("ray out?\n");
+  ray *out = malloc(sizeof(ray));
+  printf("declaration passed\n");
+  out->startPos = vecStart;
+  printf("done\n");
   //setup ray error
-  ray rayERROR;
-  Vec2 ERRstart;
-  ERRstart.x = 50;
-  ERRstart.y = 50;
-  Vec2 ERRend;
-  ERRend.x = 950;
-  ERRend.y = 50;
-  rayERROR.startPos = &ERRstart;
-  rayERROR.endPos = &ERRend;
+  ray *rayERROR;
+  Vec2 *ERRstart;
+  ERRstart->x = 50;
+  ERRstart->y = 50;
+  Vec2 *ERRend;
+  ERRend->x = 950;
+  ERRend->y = 50;
+  printf("is it this?\n");
+  rayERROR->startPos = ERRstart;
+  rayERROR->endPos = ERRend;
 
   //setup Vec error
   intVec2 ERROR;
@@ -33,9 +54,9 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   Vec2 unitStep;
   unitStep.x = data->map->map_coord[0][0][2] - data->map->map_coord[0][0][0]; 
   unitStep.y = data->map->map_coord[0][0][3] - data->map->map_coord[0][0][1];  
-
+  printf("unitstep passed\n");
   //create dof depth of field
-  int dof = 2;
+  int dof = 0;
 
   //convert angle to rad
   float angleRad = (abs(angle) * PI) / 180; 
@@ -45,41 +66,31 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   Vec2 interX;
 
   //get y map position for player position
-  printf("getting map position from start position...\n");
   intVec2 playerMapPos = getMapPos(data, (int)vecStart->x, (int)vecStart->y);
-  printf("done\n");
-
+  printf("playermappos passed\n");
 
   if (playerMapPos.x == -1) return rayERROR;
 
 //----------------------SETUP BASE RAYCAST VALUES---------------------------------------------------------------------
 
   //setup interY wich checks for collisions on y
-  printf("setting up interY...\n");
   if (angle < 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][1]-1;}
   else if (angle > 0) {interY.y = data->map->map_coord[playerMapPos.x][playerMapPos.y][3]+1;}
   else interY.y = vecStart->y; 
-  printf("done\n");
 
 
   //get interX wich checks for collisions on X
-  printf("setting up interX....\n");
   if (angle > - 90 && angle < 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][2]+1;}
   else if (angle < - 90 || angle > 90) {interX.x = data->map->map_coord[playerMapPos.x][playerMapPos.y][0]-1;}
   else interX.x = vecStart->x;
-  printf("done\n");
   
   //setup x pos
-  printf("setting up y pos for interX...\n");
   if (angle < 0) interX.y = vecStart->y + (vecStart->x - interX.x) * tan(angleRad);
   else interX.y = vecStart->y - (vecStart->x - interX.x) * tan(angleRad);
-  printf("done\n");
-  printf("setting up x pos for interY...\n");
   interY.x = vecStart->x + abs(vecStart->y - interY.y) / tan(angleRad);
-  printf("done\n");
 
 //----------------------------------------------------------------------------------------------------------------------
-
+  printf("passed interY parmaters\n");
   //setup vec map pos position of interY in map
   intVec2 vecMapPosY;
   intVec2 vecMapPosX;
@@ -104,96 +115,55 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   int foundWall = 0;
 
 //---------------------------------------------LOOP----------------------------------------------------------------------
-  printf("going into loop...\n");
   for (int i = 0;i < dof; i++)
   {
     
-    //find pos in map
-    printf("finding interX and interY pos in map...\n");
-    
-    printf("interY.y = %f\n", interY.y);
-    printf("interY.x = %f\n", interY.x);
-    printf("interX.y = %f\n", interX.y);
-    printf("interX.x = %f\n", interX.x);
     
     vecMapPosY = getMapPos(data, (int)interY.y, (int)interY.x);
     vecMapPosX = getMapPos(data, (int)interX.y, (int)interX.x);
-    printf("done\n");
-
-    //if pos not in map
-    printf("returning error if pos not in map..\n");
-    if (vecMapPosY.x == -1) {printf("interY x = %d  ", (int)interY.x); printf("interY y = %d\n", (int)interY.y); /*return rayERROR;*/}
-    if (vecMapPosX.x == -1) {printf("interX x = %d  ", (int)interX.x); printf("interX y = %d\n", (int)interX.y); /*return rayERROR;*/}
-    printf("NO ERROR\n");
-
+    printf("vecmapos passed\n");
     //IF HIT WALL
-    printf("checking if ray hit wall...\n");
     if (data->map->map[vecMapPosY.y][vecMapPosY.x] == 1) 
     {
       if (foundWall != 2 && foundWall != 3) foundWall += 2; 
-      printf("found wall in y\n"); 
-      printf("map pos Y = %d\n", vecMapPosY.y); 
-      printf("map pos X = %d\n", vecMapPosY.x);
     }
 
     if (data->map->map[vecMapPosX.y][vecMapPosX.x] == 1) 
     {
       if (foundWall != 1 && foundWall != 3) foundWall += 1; 
-      printf("found wall in x\n"); 
-      printf("map pos Y = %d\n", vecMapPosX.y); 
-      printf("map pos X = %d\n", vecMapPosX.x);
     }
 
-    printf("done\n");
 
 
     
-    printf("hypX = %f\n", hyp.x);
-    printf("hypY = %f\n", hyp.y);
-    printf("foundWall == %d\n", foundWall);
     if (foundWall < 2)
     {
-      printf("checking if looking up...\n");
       if (angle < 0) 
       {
-        printf("LOOKING UP\n");
-        printf("updating interY value...\n");
         interY.y -= unitStep.y;
         interY.x += unitStep.y/tan(angleRad);
-        printf("done\n");
       }
       else if (angle > 0) 
       {
-        printf("LOOKING DOWN\n");
-        printf("updating interY value...\n");
         interY.y += unitStep.y;
         interY.x += unitStep.y/tan(angleRad);
-        printf("done\n");
       }
       
 
     }
     if (foundWall < 1 || foundWall == 2)
     {
-
-      printf("CHECKING IF LOOKING RIGHT\n");
       if (angle > - 90 && angle < 90)
       {
-        printf("LOOKING RIGHT\n");
-        printf("updating interX value...\n");
         interX.x += unitStep.x;
         if (angle < 0) interX.y -= unitStep.y * tan(angleRad);
         else interX.y += unitStep.y * tan(angleRad);
-        printf("done\n");
       }
       else if (angle < - 90 || angle > 90)
       {
-        printf("LOOKING LEFT\n");
-        printf("updating interX value...\n");
         interX.x -= unitStep.x;
         if (angle < 0) interX.y += unitStep.y * tan(angleRad);
         else interX.y -= unitStep.y * tan(angleRad);
-        printf("done\n");
       }
 
     }
@@ -209,36 +179,33 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
   }
   
 //-------------------------------------------------------------------------------------------------------------------------------------
-
+  printf("passed loop\n");
   //set ray out dependant on wich ray is shorter
-  if (foundWall == 2 && hyp.y < hyp.x) {out.endPos = &interY; printf("drawing interY");}
-  else if (foundWall == 1 && hyp.x < hyp.y) {out.endPos = &interX; printf("drawing interX");}
+  if (foundWall == 2 && hyp.y < hyp.x) {out->endPos = &interY;}
+  else if (foundWall == 1 && hyp.x < hyp.y) {out->endPos = &interX;}
   else 
   {
-    if (hyp.y < hyp.x) out.endPos = &interY;
-    else out.endPos = &interX;
+    if (hyp.y < hyp.x) out->endPos = &interY;
+    else out->endPos = &interX;
   }
+  if (out->endPos == &interY) out->length = hyp.y;
+  else out->length = hyp.x;
+  
+  float playerAngleRad = (abs(data->player->dir) * PI) / 180;
+
+  out->length *= cos(angleRad - playerAngleRad);
 
  //drawSquare(data, data->current_img, interX.x - 2, interX.y - 2, interX.x + 2, interX.y + 2, 0x00FF0000); 
  //drawSquare(data, data->current_img, interY.x - 2, interY.y - 2, interY.x + 2, interY.y + 2, 0x00FF0000); 
   
   
   //check limits
-  if (out.endPos->x > data->sizeX) out.endPos->x = data->sizeX;
-  if (out.endPos->x < 0) out.endPos->x = 0;
-  if (out.endPos->y > data->sizeY) out.endPos->y = data->sizeY;
-  if (out.endPos->y < 0) out.endPos->y = 0;
+  if (out->endPos->x > data->sizeX) out->endPos->x = data->sizeX;
+  if (out->endPos->x < 0) out->endPos->x = 0;
+  if (out->endPos->y > data->sizeY) out->endPos->y = data->sizeY;
+  if (out->endPos->y < 0) out->endPos->y = 0;
 
-  //----------------DEBUGGING-------------------
-  printf("angle = %d\n", angle);
-  printf("startPos X = %f\n", vecStart->x);
-  printf("startPos Y = %f\n", vecStart->y);
-  printf("interX X = %f\n", interX.x);
-  printf("interX Y = %f\n", interX.y);
-  printf("interY X = %f\n", interY.x);
-  printf("interY Y = %f\n", interY.y);
-
-  //--------------------------------------------
+  printf("passed ray\n");
 
 
   return out;
@@ -247,8 +214,25 @@ ray createRay(t_data *data, Vec2 *vecStart, int angle)
 //draw ray
 void drawRay(t_data *data, ray *myRay, int color)
 {
- 
-  Vec2 *start = myRay->startPos;
-  Vec2 *end = myRay->endPos;
+  printf("drawing ray\n");
+  if (myRay->tag == 'e')
+  {
+    createLine(data, data->current_img, myRay->startPos->x, myRay->startPos->y, myRay->endPos->x, myRay->endPos->y, color);
+    return;
+  }
+  printf("if passed\n");
   createLine(data, data->current_img, myRay->startPos->x, myRay->startPos->y, myRay->endPos->x, myRay->endPos->y, color);
+  drawRay(data, myRay->nextRay, color);
+  freeRay(data, data->Ray);
+}
+
+void freeRay(t_data *data, ray *ray)
+{
+  if (ray->tag == 'e')
+  {
+    free(ray);
+    return;
+  }
+  freeRay(data, ray->nextRay);
+  free(ray);
 }

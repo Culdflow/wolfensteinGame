@@ -13,7 +13,21 @@
 
 #define MLX_ERROR 1
 
-ray currentRay;
+int state = 1;
+int baseAngle;
+
+ray *currentRay;
+
+//when clicked track if clicked on a box to turn it into a wall
+int whenClicked(int keycode, t_data *data)
+{
+  printf("mouse event keycode = %d\n", keycode);
+  if (keycode == 1)
+  {
+    printf("mouse click\n");
+  }
+  return (0);
+}
 
 //handles keypresses 
 int	handle_keypress(int keysym, t_data *data)
@@ -55,24 +69,34 @@ int	render(t_data *data)
       clearImage(data, data->current_img, WINDOW_WIDTH, WINDOW_HEIGHT);
       //track mouse position
       mouse_pos(data);
-      createMapImg(data, data->current_img, data->map, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_OFFSET); 
+      createMapImg(data, data->current_img, data->map, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_OFFSET);
+
+      if (state == 0)
+      {
       highlight_box(data, data->current_img);
-      button myButton = createButton(0x00FF0000, 0x0000FF00, 10, 0, 0, 50, 50, buttonSwitch); 
-      drawButton(data, data->current_img, &myButton);
-      drawPlayer(data, data->current_img, data->player); 
-      //if image did not change from last frame don't print it to the screen
-      //if (data->last_img != data->current_img)
-      //{
-        currentRay = createRay(data, data->player->pos, data->player->dir);       
-        drawRay(data, &currentRay, 0x00FF00FF);
-        //createLine(data, data->current_img, 0, 0, data->mouseX, data->mouseY, 0x00FF00FF);
-        mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->current_img->img, 0, 0);      
-        data->last_img = data->current_img;
-      //}
+      }
+      if (state == 1)
+      {
+        drawPlayer(data, data->current_img, data->player);
+        baseAngle = data->player->dir - (data->player->fov / 2);
+        data->Ray = createRayList(data, baseAngle,currentRay, currentRay, 0);
+        printf("data->Ray worked\n");
+        drawRay(data, data->Ray, 0x00FF0000);
+        //for (int i=0; i < sizeof(data->listRay->list)/sizeof(data->listRay->list[0]); i++)
+        //{
+          //printf("%d", i);
+          //drawRay(data, &data->listRay->list[i], 0x00FF00FF);
+        //}
+      }
+      mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->current_img->img, 0, 0);      
+    //mlx_put_image_to_window(data.mlx_ptr, data.win_ptr, &img.img, 0, 0);   
+      data->last_img = data->current_img;
     }
     
     return (0);
 }
+
+
 
 //test print mouse position
 int mouse_pos(t_data *data)
@@ -90,13 +114,18 @@ int mouse_pos(t_data *data)
 int	main(void)
 {   
     //initialize struct elements
+    currentRay = malloc(sizeof(ray));
     t_data	data;
+    data.Ray = malloc(sizeof(ray));
+    debug debug1;
+    data.debug = &debug1;
     t_player player;
     Vec2 playerPos;
     playerPos.x = 500;
     playerPos.y = 500;
     player.pos = &playerPos;
     player.dir = 0;
+    player.fov = 60;
     player.speed = 3;
     data.oldMouseX = 0;
     data.player = &player;
@@ -116,6 +145,7 @@ int	main(void)
           }
           printf("\n");
         }
+    debug1.size = 20;
         printf("\n");
     } */
     
@@ -156,10 +186,10 @@ int	main(void)
     data.sizeY = WINDOW_HEIGHT;
     
 
-    //mlx_put_image_to_window(data.mlx_ptr, data.win_ptr, &img.img, 0, 0);   
     /* Setup hooks */ 
     mlx_loop_hook(data.mlx_ptr, &render, &data);
     mlx_hook(data.win_ptr, KeyPress, KeyPressMask, &handle_keypress, &data);
+    mlx_hook(data.win_ptr, ButtonPress, ButtonPressMask, &whenClicked, &data);
     mlx_loop(data.mlx_ptr);
 
     /* we will exit the loop if there's no window left, and execute this code */

@@ -153,3 +153,26 @@ void clearImage(t_data *data, t_image *img, int WINDOW_WIDTH, int WINDOW_HEIGHT)
       my_mlx_pixel_put(data, img, x, y, 0x00000000);
   }
 }
+
+void addDebug(t_data *data, char *string)
+{
+  printf("added to debug\n");
+  for (int i = 0; i < 20; i++)
+  {
+    if (data->debug->list[i] != 1)
+    {
+      data->debug->list[i] = 1;
+      mlx_string_put(data->mlx_ptr, data->win_ptr, 750, 50 + i*5, 0x0000FF00, string);
+      return;
+    }
+  }
+  printf("no more space in debug\n");
+}
+
+void emptyDebug(t_data *data)
+{
+  for (int i = 0; i < sizeof(data->debug->list)/sizeof(data->debug->list[0]); i++)
+  {
+    data->debug->list[i] = 0;
+  }
+}

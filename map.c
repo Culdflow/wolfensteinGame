@@ -5,7 +5,7 @@
 
 int mainMap[20][20] = {{1,1,1,1,1,1,1,1,1,1},
                        {1,0,0,0,0,0,0,0,0,1},
-                       {1,0,1,0,1,0,0,0,1,1},
+                       {1,1,1,0,1,0,0,0,1,1},
                        {1,1,0,0,0,0,0,0,0,1},
                        {1,1,0,0,0,0,0,0,0,1},
                        {1,1,0,0,0,0,0,0,0,1},
@@ -58,18 +58,7 @@ void createMapImg(t_data *data, t_image *img, t_map *map, int WINDOW_WIDTH, int 
         }
 }
 
-//when clicked track if clicked on a box to turn it into a wall
-void whenClicked(t_data *data)
-{
-  for (int x = 0; x <= data->map->x; x++)
-  {
-    for (int y = 0; y <= data->map->y; y++)
-    {
 
-    }
-  }
-
-}
 
 //returns the position you are in the map
 intVec2 getMapPos(t_data *data, int posX, int posY)
@@ -101,3 +90,5 @@ intVec2 getMapPos(t_data *data, int posX, int posY)
     {printf("coord not in map\n");return ERROR;}
   return mapPos;
 }
+
+
